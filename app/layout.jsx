@@ -8,6 +8,9 @@ import ReadingProgress from './components/ReadingProgress';
 export const metadata = {
   title: 'AI News Digest',
   description: 'Auto-generated articles from top AI companies',
+  verification: {
+    google: 'WPXHcWraaMEOgVi-aMdMFDZ9i4gwVlptMva0yl1Wu00',
+  },
 };
 
 export default function RootLayout({ children }) {
