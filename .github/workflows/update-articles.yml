@@ -25,7 +25,6 @@ jobs:
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-          DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
           DB_PATH: ${{ github.workspace }}/db/articles.db
         run: node automation/index.js
 

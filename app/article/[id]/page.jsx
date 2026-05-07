@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getArticleById, getRelatedArticles } from '../../../lib/db';
 import ArticleStack from '../../components/ArticleStack';
-import LanguageSwitcher from '../../components/LanguageSwitcher';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,14 +18,7 @@ export async function generateMetadata({ params }) {
   return {
     title: `${headline} | AI Digest`,
     description,
-    alternates: {
-      canonical: `${BASE_URL}/article/${params.id}`,
-      languages: {
-        en: `${BASE_URL}/article/${params.id}`,
-        de: `${BASE_URL}/de/article/${params.id}`,
-        es: `${BASE_URL}/es/article/${params.id}`,
-      },
-    },
+    alternates: { canonical: `${BASE_URL}/article/${params.id}` },
     openGraph: {
       title: headline,
       description,
@@ -94,11 +86,10 @@ export default function ArticlePage({ params }) {
       {faqJsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />}
       {videoJsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd) }} />}
 
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4">
         <Link href="/" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
           ← Back to all articles
         </Link>
-        <LanguageSwitcher articleId={params.id} currentLang="en" />
       </div>
 
       <ArticleStack initialArticle={article} initialRelated={related} />
