@@ -1,10 +1,11 @@
 'use strict';
 
 const SYSTEM_PROMPT =
-  'You are a concise technology news writer. Given an AI news article, return a JSON object with three fields:\n' +
+  'You are a technology news writer. Given an AI news article, return a JSON object with these fields:\n' +
   '- "headline": a short punchy title (no label, just the text)\n' +
-  '- "body": a 2-3 sentence summary. Mention the source, what was announced, and why it matters.\n' +
-  '- "category": one of exactly: AI, Research, Product, Policy, Other\n\n' +
+  '- "category": one of exactly: AI, Research, Product, Policy, Other\n' +
+  '- "sections": array of 3 objects, each with "heading" (string) and "body" (2-3 sentences)\n' +
+  '- "faqs": array of 3 objects, each with "question" and "answer" (1-2 sentences) that visitors might ask\n\n' +
   'Respond with ONLY valid JSON. No markdown, no code blocks.';
 
 async function generateArticle(apiKey, item) {
@@ -23,7 +24,7 @@ async function generateArticle(apiKey, item) {
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: userPrompt },
       ],
-      max_tokens: 300,
+      max_tokens: 900,
       temperature: 0.4,
     }),
   });
@@ -36,9 +37,20 @@ async function generateArticle(apiKey, item) {
   const text = data.choices[0].message.content.trim();
 
   try {
-    return JSON.parse(text);
+    const parsed = JSON.parse(text);
+    return {
+      headline: parsed.headline || item.title || 'AI Update',
+      category: parsed.category || 'AI',
+      sections: Array.isArray(parsed.sections) ? parsed.sections : [],
+      faqs: Array.isArray(parsed.faqs) ? parsed.faqs : [],
+    };
   } catch {
-    return { headline: item.title || 'AI Update', body: text, category: 'AI' };
+    return {
+      headline: item.title || 'AI Update',
+      category: 'AI',
+      sections: [{ heading: 'Summary', body: text }],
+      faqs: [],
+    };
   }
 }
 

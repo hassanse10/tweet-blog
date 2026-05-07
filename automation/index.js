@@ -6,6 +6,7 @@ const { fetchItems } = require('./rss');
 const { generateArticle } = require('./openrouter');
 const { openDb, getExistingTweetIds, saveArticle } = require('./db');
 const { sendNotifications } = require('./notify');
+const { searchYouTube } = require('./youtube');
 
 async function run() {
   const apiKey = process.env.OPENROUTER_API_KEY;
@@ -24,14 +25,20 @@ async function run() {
     try {
       console.log(`  Generating: "${item.title}" (${item.author})`);
       const article = await generateArticle(apiKey, item);
+
+      const youtubeVideoId = await searchYouTube(process.env.YOUTUBE_API_KEY, article.headline);
+      if (youtubeVideoId) console.log(`  YouTube: ${youtubeVideoId}`);
+
       const result = saveArticle(db, {
         tweetId: item.id,
         author: item.author,
         tweetText: item.text,
         tweetUrl: item.url,
         headline: article.headline,
-        body: article.body,
+        sections: article.sections,
+        faqs: article.faqs,
         category: article.category,
+        youtubeVideoId,
       });
       if (result) {
         saved.push({ id: result.id, author: item.author, headline: article.headline });
