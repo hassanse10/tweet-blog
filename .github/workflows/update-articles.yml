@@ -1,0 +1,37 @@
+name: Update Articles
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # every 6 hours
+  workflow_dispatch:         # allow manual run from GitHub UI
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install automation dependencies
+        run: cd automation && npm install
+
+      - name: Run automation
+        env:
+          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          DB_PATH: ${{ github.workspace }}/db/articles.db
+        run: node automation/index.js
+
+      - name: Commit updated database
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add db/articles.db
+          git diff --staged --quiet || git commit -m "chore: update articles db $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push
