@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@upstash/redis": "^1.38.0",
     "better-sqlite3": "^11.9.1",
     "next": "^14.2.35",
     "react": "^18",
