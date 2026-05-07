@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '0 11 * * *'   # daily at 11am UTC (after YouTube backfill)
   workflow_dispatch:
+    inputs:
+      force_redo:
+        description: 'Overwrite existing translations (1 = yes)'
+        required: false
+        default: '0'
 
 jobs:
   backfill:
@@ -26,6 +31,7 @@ jobs:
           DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
           DB_PATH: ${{ github.workspace }}/db/articles.db
           BACKFILL_BATCH: '50'
+          FORCE_REDO: ${{ github.event.inputs.force_redo || '0' }}
         run: node automation/backfill-translations.js
 
       - name: Commit updated database

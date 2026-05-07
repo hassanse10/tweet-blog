@@ -17,16 +17,21 @@ async function run() {
 
   const db = openDb();
 
-  // Find articles missing at least one translation
-  const articles = db.prepare(`
-    SELECT a.id, a.summary, a.sections, a.faqs FROM articles a
-    WHERE NOT EXISTS (
-      SELECT 1 FROM article_translations t
-      WHERE t.article_id = a.id AND t.lang = 'de'
-    )
-    ORDER BY a.created_at DESC
-    LIMIT ?
-  `).all(BATCH);
+  const forceRedo = process.env.FORCE_REDO === '1';
+
+  // Find articles missing translations — or all articles if FORCE_REDO=1
+  const articles = db.prepare(
+    forceRedo
+      ? `SELECT id, summary, sections, faqs FROM articles ORDER BY created_at DESC LIMIT ?`
+      : `SELECT a.id, a.summary, a.sections, a.faqs FROM articles a
+         WHERE NOT EXISTS (
+           SELECT 1 FROM article_translations t
+           WHERE t.article_id = a.id AND t.lang = 'de'
+         )
+         ORDER BY a.created_at DESC LIMIT ?`
+  ).all(BATCH);
+
+  if (forceRedo) console.log('FORCE_REDO mode — overwriting existing translations');
 
   console.log(`Backfilling translations for ${articles.length} articles...`);
 
