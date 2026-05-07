@@ -1,16 +1,15 @@
 'use strict';
 
 const SYSTEM_PROMPT =
-  'You are a concise technology news writer. Given a tweet, return a JSON object with three fields:\n' +
+  'You are a concise technology news writer. Given an AI news article, return a JSON object with three fields:\n' +
   '- "headline": a short punchy title (no label, just the text)\n' +
-  '- "body": a 2-3 sentence article body. Mention who posted it, what changed, and why it matters.\n' +
+  '- "body": a 2-3 sentence summary. Mention the source, what was announced, and why it matters.\n' +
   '- "category": one of exactly: AI, Research, Product, Policy, Other\n\n' +
   'Respond with ONLY valid JSON. No markdown, no code blocks.';
 
-async function generateArticle(apiKey, tweet) {
+async function generateArticle(apiKey, item) {
   const userPrompt =
-    `Tweet by @${tweet.author}:\n\n"${tweet.text}"\n\n` +
-    `Write the JSON article object.`;
+    `Source: ${item.author}\nTitle: ${item.title}\n\n${item.text}\n\nWrite the JSON article object.`;
 
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
@@ -39,8 +38,7 @@ async function generateArticle(apiKey, tweet) {
   try {
     return JSON.parse(text);
   } catch {
-    // fallback: treat whole text as body with generic headline
-    return { headline: 'AI Update', body: text, category: 'AI' };
+    return { headline: item.title || 'AI Update', body: text, category: 'AI' };
   }
 }
 
