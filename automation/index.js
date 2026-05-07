@@ -4,9 +4,12 @@ require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 
 const { fetchItems } = require('./rss');
 const { generateArticle } = require('./openrouter');
-const { openDb, getExistingTweetIds, saveArticle } = require('./db');
+const { openDb, getExistingTweetIds, saveArticle, saveTranslation } = require('./db');
 const { sendNotifications } = require('./notify');
 const { searchYouTube } = require('./youtube');
+const { translateArticle } = require('./translate');
+
+const TRANSLATE_LANGS = ['de', 'es'];
 
 async function run() {
   const apiKey = process.env.OPENROUTER_API_KEY;
@@ -40,8 +43,26 @@ async function run() {
         category: article.category,
         youtubeVideoId,
       });
+
       if (result) {
         saved.push({ id: result.id, author: item.author, headline: article.headline });
+
+        // Translate to DE and ES
+        if (process.env.DEEPL_API_KEY) {
+          for (const lang of TRANSLATE_LANGS) {
+            try {
+              const translated = await translateArticle(process.env.DEEPL_API_KEY, {
+                headline: article.headline,
+                sections: article.sections,
+                faqs: article.faqs,
+              }, lang);
+              saveTranslation(db, result.id, lang, translated);
+              console.log(`  Translated to ${lang}`);
+            } catch (err) {
+              console.error(`  Translation to ${lang} failed: ${err.message}`);
+            }
+          }
+        }
       }
     } catch (err) {
       console.error(`  Failed "${item.title}": ${err.message}`);

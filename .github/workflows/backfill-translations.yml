@@ -1,12 +1,12 @@
-name: Update Articles
+name: Backfill Translations
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # every 6 hours
-  workflow_dispatch:         # allow manual run from GitHub UI
+    - cron: '0 11 * * *'   # daily at 11am UTC (after YouTube backfill)
+  workflow_dispatch:
 
 jobs:
-  update:
+  backfill:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -21,18 +21,17 @@ jobs:
       - name: Install automation dependencies
         run: cd automation && npm install
 
-      - name: Run automation
+      - name: Run translation backfill
         env:
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           DEEPL_API_KEY: ${{ secrets.DEEPL_API_KEY }}
           DB_PATH: ${{ github.workspace }}/db/articles.db
-        run: node automation/index.js
+          BACKFILL_BATCH: '50'
+        run: node automation/backfill-translations.js
 
       - name: Commit updated database
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add db/articles.db
-          git diff --staged --quiet || git commit -m "chore: update articles db $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git diff --staged --quiet || git commit -m "chore: backfill translations $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git push

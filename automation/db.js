@@ -35,7 +35,32 @@ function openDb(dbPath) {
   if (!cols.includes('faqs'))             db.exec("ALTER TABLE articles ADD COLUMN faqs TEXT NOT NULL DEFAULT '[]'");
   if (!cols.includes('youtube_video_id')) db.exec("ALTER TABLE articles ADD COLUMN youtube_video_id TEXT NOT NULL DEFAULT ''");
 
+  // Translations table
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS article_translations (
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      article_id INTEGER NOT NULL,
+      lang       TEXT NOT NULL,
+      headline   TEXT NOT NULL,
+      sections   TEXT NOT NULL DEFAULT '[]',
+      faqs       TEXT NOT NULL DEFAULT '[]',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(article_id, lang)
+    );
+  `);
+
   return db;
+}
+
+function saveTranslation(db, articleId, lang, { headline, sections, faqs }) {
+  db.prepare(`
+    INSERT INTO article_translations (article_id, lang, headline, sections, faqs)
+    VALUES (?, ?, ?, ?, ?)
+    ON CONFLICT(article_id, lang) DO UPDATE SET
+      headline = excluded.headline,
+      sections = excluded.sections,
+      faqs     = excluded.faqs
+  `).run(articleId, lang, headline, JSON.stringify(sections || []), JSON.stringify(faqs || []));
 }
 
 function getExistingTweetIds(db) {
@@ -68,4 +93,4 @@ function saveArticle(db, { tweetId, author, tweetText, tweetUrl, headline, secti
   return null;
 }
 
-module.exports = { openDb, getExistingTweetIds, saveArticle };
+module.exports = { openDb, getExistingTweetIds, saveArticle, saveTranslation };
