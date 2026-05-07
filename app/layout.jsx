@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import './globals.css';
 import ThemeToggle from './components/ThemeToggle';
 import SearchBar from './components/SearchBar';
+import NotificationBanner from './components/NotificationBanner';
 
 export const metadata = {
   title: 'AI News Digest',
@@ -22,6 +23,7 @@ export default function RootLayout({ children }) {
             </Suspense>
             <ThemeToggle />
           </div>
+          <NotificationBanner />
         </header>
         <main className="max-w-5xl mx-auto px-4 py-8">
           {children}

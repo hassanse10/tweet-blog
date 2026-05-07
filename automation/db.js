@@ -47,9 +47,10 @@ function saveArticle(db, { tweetId, author, tweetText, tweetUrl, headline, body,
     db.prepare(`
       INSERT INTO articles_fts(rowid, headline, body) VALUES (?, ?, ?)
     `).run(info.lastInsertRowid, headline, body);
+    return { id: info.lastInsertRowid, headline };
   }
 
-  return info.changes > 0;
+  return null;
 }
 
 module.exports = { openDb, getExistingTweetIds, saveArticle };
