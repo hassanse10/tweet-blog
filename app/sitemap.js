@@ -3,17 +3,19 @@ import { searchArticles } from '../lib/db';
 export const dynamic = 'force-dynamic';
 
 const BASE_URL = 'https://tweet-blog-production.up.railway.app';
+const CATEGORIES = ['AI', 'Research', 'Product', 'Policy', 'Other'];
 
 export default function sitemap() {
   const { articles } = searchArticles({ limit: 5000 });
 
   return [
-    {
-      url: BASE_URL,
+    { url: BASE_URL, lastModified: new Date(), changeFrequency: 'hourly', priority: 1 },
+    ...CATEGORIES.map((c) => ({
+      url: `${BASE_URL}/topic/${c.toLowerCase()}`,
       lastModified: new Date(),
       changeFrequency: 'hourly',
-      priority: 1,
-    },
+      priority: 0.9,
+    })),
     ...articles.map((a) => ({
       url: `${BASE_URL}/article/${a.id}`,
       lastModified: new Date(a.created_at),
