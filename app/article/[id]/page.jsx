@@ -5,7 +5,7 @@ import ArticleStack from '../../components/ArticleStack';
 
 export const dynamic = 'force-dynamic';
 
-const BASE_URL = 'https://tweet-blog-production.up.railway.app';
+const BASE_URL = 'https://1minai.site';
 
 export async function generateMetadata({ params }) {
   const article = getArticleById(Number(params.id));

@@ -4,7 +4,7 @@ import { searchArticles } from '../../../lib/db';
 
 export const dynamic = 'force-dynamic';
 
-const BASE_URL = 'https://tweet-blog-production.up.railway.app';
+const BASE_URL = 'https://1minai.site';
 
 const VALID_CATEGORIES = ['AI', 'Research', 'Product', 'Policy', 'Other'];
 

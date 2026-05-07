@@ -1,4 +1,4 @@
-const BASE_URL = 'https://tweet-blog-production.up.railway.app';
+const BASE_URL = 'https://1minai.site';
 
 export default function robots() {
   return {
