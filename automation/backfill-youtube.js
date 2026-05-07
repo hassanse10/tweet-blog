@@ -19,7 +19,7 @@ async function run() {
   const db = openDb();
 
   const articles = db.prepare(`
-    SELECT id, summary FROM articles
+    SELECT id, author, summary FROM articles
     WHERE youtube_video_id = ''
     ORDER BY created_at DESC
     LIMIT ?
@@ -34,7 +34,7 @@ async function run() {
     const headline = row.summary.split('\n').find(Boolean) || '';
     if (!headline) continue;
 
-    const videoId = await searchYouTube(apiKey, headline);
+    const videoId = await searchYouTube(apiKey, headline, row.author);
     update.run(videoId || '', row.id);
     if (videoId) {
       found++;

@@ -26,7 +26,7 @@ async function run() {
       console.log(`  Generating: "${item.title}" (${item.author})`);
       const article = await generateArticle(apiKey, item);
 
-      const youtubeVideoId = await searchYouTube(process.env.YOUTUBE_API_KEY, article.headline);
+      const youtubeVideoId = await searchYouTube(process.env.YOUTUBE_API_KEY, article.headline, item.author);
       if (youtubeVideoId) console.log(`  YouTube: ${youtubeVideoId}`);
 
       const result = saveArticle(db, {
