@@ -1,0 +1,83 @@
+'use strict';
+
+const Database = require('better-sqlite3');
+const path = require('path');
+
+const DB_PATH = process.env.DB_PATH || path.join(process.cwd(), '../db/articles.db');
+
+const ARTICLE_COLS = 'id, author, tweet_text, tweet_url, summary, image_url, category, rating, created_at';
+
+function openDb() {
+  return new Database(DB_PATH);
+}
+
+function searchArticles({ q, source, category, page = 1, limit = 20 } = {}) {
+  const db = openDb();
+  const offset = (page - 1) * limit;
+  const conditions = [];
+  const params = [];
+
+  if (source) { conditions.push('author = ?'); params.push(source); }
+  if (category) { conditions.push('category = ?'); params.push(category); }
+
+  const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+
+  let articles, total;
+
+  if (q && q.trim()) {
+    // FTS5 search — join back to articles for full row data
+    const ftsWhere = conditions.length
+      ? `WHERE a.${conditions.join(' AND a.')}` // rebind to alias
+      : '';
+    // simpler: use INNER JOIN with headline/body MATCH
+    const ftsConditions = [...conditions];
+    const ftsParams = [...params];
+
+    articles = db.prepare(`
+      SELECT a.${ARTICLE_COLS}
+      FROM articles a
+      INNER JOIN articles_fts f ON f.rowid = a.id
+      WHERE f MATCH ?
+        ${ftsConditions.length ? 'AND ' + ftsConditions.map(c => 'a.' + c).join(' AND ') : ''}
+      ORDER BY a.created_at DESC
+      LIMIT ? OFFSET ?
+    `).all(q, ...ftsParams, limit, offset);
+
+    total = db.prepare(`
+      SELECT COUNT(*) AS n
+      FROM articles a
+      INNER JOIN articles_fts f ON f.rowid = a.id
+      WHERE f MATCH ?
+        ${ftsConditions.length ? 'AND ' + ftsConditions.map(c => 'a.' + c).join(' AND ') : ''}
+    `).get(q, ...ftsParams)?.n ?? 0;
+  } else {
+    articles = db.prepare(`
+      SELECT ${ARTICLE_COLS} FROM articles ${where}
+      ORDER BY created_at DESC LIMIT ? OFFSET ?
+    `).all(...params, limit, offset);
+
+    total = db.prepare(`
+      SELECT COUNT(*) AS n FROM articles ${where}
+    `).get(...params)?.n ?? 0;
+  }
+
+  return { articles, total, page, pages: Math.max(1, Math.ceil(total / limit)) };
+}
+
+function getArticleById(id) {
+  const db = openDb();
+  return db.prepare(`SELECT ${ARTICLE_COLS} FROM articles WHERE id = ?`).get(id);
+}
+
+function getDistinctSources() {
+  const db = openDb();
+  return db.prepare('SELECT DISTINCT author FROM articles ORDER BY author').all().map((r) => r.author);
+}
+
+function rateArticle(id, delta) {
+  const db = openDb();
+  db.prepare('UPDATE articles SET rating = rating + ? WHERE id = ?').run(delta, id);
+  return db.prepare('SELECT rating FROM articles WHERE id = ?').get(id)?.rating ?? 0;
+}
+
+module.exports = { searchArticles, getArticleById, getDistinctSources, rateArticle };
