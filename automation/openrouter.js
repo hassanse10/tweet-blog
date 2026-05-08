@@ -48,12 +48,7 @@ async function generateArticle(apiKey, item) {
       faqs: Array.isArray(parsed.faqs) ? parsed.faqs : [],
     };
   } catch {
-    return {
-      headline: item.title || 'AI Update',
-      category: 'AI',
-      sections: [{ heading: 'Summary', body: text }],
-      faqs: [],
-    };
+    throw new Error(`OpenRouter returned unparseable JSON for "${item.title}"`);
   }
 }
 
