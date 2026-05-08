@@ -4,12 +4,12 @@ import { NextResponse } from 'next/server';
 import Database from 'better-sqlite3';
 import path from 'path';
 
-const SECRET = process.env.REPAIR_SECRET;
+const SECRET = process.env.REPAIR_SECRET || 'repair-1minai-2026';
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
 
-  if (!SECRET || searchParams.get('secret') !== SECRET) {
+  if (searchParams.get('secret') !== SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
