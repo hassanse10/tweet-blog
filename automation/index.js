@@ -46,6 +46,7 @@ async function run() {
         faqs: article.faqs,
         category: article.category,
         youtubeVideoId,
+        imageUrl: item.image || null,
       });
 
       if (result) {

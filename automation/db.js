@@ -42,16 +42,17 @@ function getExistingTweetIds(db) {
   return new Set(db.prepare('SELECT tweet_id FROM articles').all().map((r) => r.tweet_id));
 }
 
-function saveArticle(db, { tweetId, author, tweetText, tweetUrl, headline, sections, faqs, category, youtubeVideoId }) {
+function saveArticle(db, { tweetId, author, tweetText, tweetUrl, headline, sections, faqs, category, youtubeVideoId, imageUrl }) {
   const body = (sections || []).map((s) => s.body).join('\n\n');
   const summary = `${headline}\n\n${body}`;
 
   const info = db.prepare(`
     INSERT OR IGNORE INTO articles
-      (tweet_id, author, tweet_text, tweet_url, summary, category, sections, faqs, youtube_video_id)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      (tweet_id, author, tweet_text, tweet_url, summary, image_url, category, sections, faqs, youtube_video_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     tweetId, author, tweetText, tweetUrl, summary,
+    imageUrl || '',
     category || 'Other',
     JSON.stringify(sections || []),
     JSON.stringify(faqs || []),

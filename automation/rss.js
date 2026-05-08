@@ -13,8 +13,33 @@ const FEEDS = [
 
 const ITEMS_PER_FEED = 5;
 
+function extractImage(item) {
+  // enclosure (standard RSS)
+  if (item.enclosure?.url && item.enclosure.url.match(/\.(jpe?g|png|webp|gif)/i)) {
+    return item.enclosure.url;
+  }
+  // media:content / media:thumbnail
+  const media = item['media:content'] || item['media:thumbnail'];
+  if (media?.$.url) return media.$.url;
+  if (Array.isArray(media) && media[0]?.$.url) return media[0].$.url;
+  // og image in content:encoded
+  const html = item['content:encoded'] || item.content || '';
+  const m = html.match(/<img[^>]+src=["']([^"']+\.(?:jpe?g|png|webp))/i);
+  if (m) return m[1];
+  return null;
+}
+
 async function fetchItems() {
-  const parser = new Parser({ timeout: 10000 });
+  const parser = new Parser({
+    timeout: 10000,
+    customFields: {
+      item: [
+        ['media:content', 'media:content', { keepArray: false }],
+        ['media:thumbnail', 'media:thumbnail', { keepArray: false }],
+        ['content:encoded', 'content:encoded'],
+      ],
+    },
+  });
   const results = [];
 
   for (const feed of FEEDS) {
@@ -29,6 +54,7 @@ async function fetchItems() {
           title: item.title || '',
           text: item.contentSnippet || item.title || '',
           url: item.link || id,
+          image: extractImage(item) || null,
           pubDate: item.isoDate || item.pubDate || null,
         });
       }
