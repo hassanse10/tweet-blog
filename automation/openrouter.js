@@ -34,8 +34,10 @@ async function generateArticle(apiKey, item) {
   }
 
   const data = await response.json();
-  const raw = data.choices[0].message.content.trim();
-  const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+  const raw = data.choices?.[0]?.message?.content?.trim();
+  if (!raw) throw new Error('Empty response from OpenRouter');
+  const fenceMatch = raw.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  const text = fenceMatch ? fenceMatch[1].trim() : raw.trim();
 
   try {
     const parsed = JSON.parse(text);

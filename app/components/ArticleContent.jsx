@@ -28,10 +28,8 @@ export default function ArticleContent({ article, related = [] }) {
   const lines = article.summary.split('\n').filter(Boolean);
   const headline = lines[0] || 'Untitled';
 
-  let sections = [];
-  let faqs = [];
-  try { sections = article.sections ? JSON.parse(article.sections) : []; } catch {}
-  try { faqs = article.faqs ? JSON.parse(article.faqs) : []; } catch {}
+  const sections = Array.isArray(article.sections) ? article.sections : [];
+  const faqs = Array.isArray(article.faqs) ? article.faqs : [];
 
   const paragraphs = sections.length ? [] : lines.slice(1).filter(Boolean);
   const mins = readingTime(article.summary);
@@ -107,7 +105,7 @@ export default function ArticleContent({ article, related = [] }) {
         )}
 
         {/* YouTube */}
-        {article.youtube_video_id && (
+        {/^[a-zA-Z0-9_-]{11}$/.test(article.youtube_video_id) && (
           <div className="mt-8">
             <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3">Related Video</h2>
             <div className="relative w-full rounded-lg overflow-hidden" style={{ paddingBottom: '56.25%' }}>
@@ -163,10 +161,12 @@ export default function ArticleContent({ article, related = [] }) {
         {/* Footer */}
         <div className="flex flex-wrap items-center justify-between gap-4 mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
           <RatingButtons articleId={article.id} initialRating={article.rating} />
-          <a href={article.tweet_url} target="_blank" rel="noopener noreferrer"
-            className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-            Read original post →
-          </a>
+          {/^https?:\/\//.test(article.tweet_url) && (
+            <a href={article.tweet_url} target="_blank" rel="noopener noreferrer"
+              className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+              Read original post →
+            </a>
+          )}
         </div>
       </div>
     </article>

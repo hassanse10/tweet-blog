@@ -11,5 +11,6 @@ export async function POST(req, { params }) {
   const delta = body.delta === -1 ? -1 : 1;
 
   const rating = rateArticle(id, delta);
+  if (rating === null) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   return NextResponse.json({ rating });
 }

@@ -6,9 +6,18 @@ function subKey(endpoint) {
   return `sub:${createHash('sha256').update(endpoint).digest('hex')}`;
 }
 
+function validateSources(sources) {
+  return Array.isArray(sources) &&
+    sources.length > 0 &&
+    sources.length <= 20 &&
+    sources.every((s) => typeof s === 'string' && s.length > 0 && s.length <= 100);
+}
+
 export async function POST(req) {
-  const { subscription, sources } = await req.json();
-  if (!subscription?.endpoint || !Array.isArray(sources) || sources.length === 0) {
+  const body = await req.json().catch(() => null);
+  if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  const { subscription, sources } = body;
+  if (!subscription?.endpoint || !validateSources(sources)) {
     return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
   }
   await redis.set(subKey(subscription.endpoint), {
@@ -21,8 +30,10 @@ export async function POST(req) {
 }
 
 export async function PUT(req) {
-  const { subscription, sources } = await req.json();
-  if (!subscription?.endpoint || !Array.isArray(sources) || sources.length === 0) {
+  const body = await req.json().catch(() => null);
+  if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  const { subscription, sources } = body;
+  if (!subscription?.endpoint || !validateSources(sources)) {
     return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
   }
   const key = subKey(subscription.endpoint);
@@ -33,7 +44,8 @@ export async function PUT(req) {
 }
 
 export async function DELETE(req) {
-  const { endpoint } = await req.json();
+  const body = await req.json().catch(() => null);
+  const endpoint = body?.endpoint;
   if (!endpoint) return NextResponse.json({ error: 'Missing endpoint' }, { status: 400 });
   await redis.del(subKey(endpoint));
   return NextResponse.json({ ok: true });

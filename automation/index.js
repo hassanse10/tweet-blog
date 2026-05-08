@@ -24,9 +24,16 @@ async function run() {
   for (const item of newItems) {
     try {
       console.log(`  Generating: "${item.title}" (${item.author})`);
-      const article = await generateArticle(apiKey, item);
+      const timeout = (ms) => new Promise((_, reject) =>
+        setTimeout(() => reject(new Error(`Timed out after ${ms}ms`)), ms)
+      );
 
-      const youtubeVideoId = await searchYouTube(process.env.YOUTUBE_API_KEY, article.headline, item.author);
+      const article = await Promise.race([generateArticle(apiKey, item), timeout(30000)]);
+
+      const youtubeVideoId = await Promise.race([
+        searchYouTube(process.env.YOUTUBE_API_KEY, article.headline, item.author),
+        timeout(10000),
+      ]);
       if (youtubeVideoId) console.log(`  YouTube: ${youtubeVideoId}`);
 
       const result = saveArticle(db, {

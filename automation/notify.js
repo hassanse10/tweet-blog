@@ -32,7 +32,8 @@ async function sendNotifications(newArticles) {
     const sub = await redis.get(key);
     if (!sub) continue;
 
-    const matching = newArticles.filter((a) => sub.sources.includes(a.author));
+    const subSources = Array.isArray(sub?.sources) ? sub.sources : [];
+    const matching = newArticles.filter((a) => subSources.includes(a.author));
     for (const article of matching) {
       const payload = JSON.stringify({
         title: article.author,

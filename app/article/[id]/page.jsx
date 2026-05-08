@@ -47,8 +47,7 @@ export default function ArticlePage({ params }) {
   const description = lines.slice(1).join(' ').slice(0, 160);
 
   // JSON-LD schemas
-  let faqs = [];
-  try { faqs = article.faqs ? JSON.parse(article.faqs) : []; } catch {}
+  const faqs = Array.isArray(article.faqs) ? article.faqs : [];
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
