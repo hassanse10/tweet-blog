@@ -34,7 +34,8 @@ async function generateArticle(apiKey, item) {
   }
 
   const data = await response.json();
-  const text = data.choices[0].message.content.trim();
+  const raw = data.choices[0].message.content.trim();
+  const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
 
   try {
     const parsed = JSON.parse(text);
