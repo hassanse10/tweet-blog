@@ -147,7 +147,7 @@ export default function ArticleContent({ article, related = [] }) {
               {related.map((r) => {
                 const rHeadline = r.summary.split('\n').find(Boolean) || 'Article';
                 return (
-                  <Link key={r.id} href={`/article/${r.id}`}
+                  <Link key={r.id} href={`/article/${r.slug || r.id}`}
                     className="block p-3 rounded-lg border border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-colors">
                     <p className="text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2">{rHeadline}</p>
                     <p className="text-xs text-gray-400 mt-1">{r.author} · {formatDate(r.created_at)}</p>
