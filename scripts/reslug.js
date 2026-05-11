@@ -2,7 +2,8 @@
 const Database = require('better-sqlite3');
 const path = require('path');
 
-const db = new Database(path.join(__dirname, '../db/articles.db'));
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, '../db/articles.db');
+const db = new Database(DB_PATH);
 
 function slugify(text) {
   let base = (text || '')
@@ -19,10 +20,19 @@ function slugify(text) {
   return base.replace(/-+$/, '') || 'article';
 }
 
-const articles = db.prepare('SELECT id, summary FROM articles ORDER BY id ASC').all();
-const update = db.prepare('UPDATE articles SET slug = ? WHERE id = ?');
+try { db.exec("CREATE TABLE IF NOT EXISTS _meta (key TEXT PRIMARY KEY, value TEXT)"); } catch {}
 
-const seen = new Map(); // slug -> count
+const slugVersion = db.prepare("SELECT value FROM _meta WHERE key = 'slug_version'").get()?.value;
+
+if (slugVersion === '2') {
+  console.log('[reslug] slugs already up to date, skipping');
+  process.exit(0);
+}
+
+console.log('[reslug] migrating slugs...');
+const articles = db.prepare('SELECT id, summary FROM articles').all();
+const update = db.prepare('UPDATE articles SET slug = ? WHERE id = ?');
+const seen = new Map();
 
 db.transaction(() => {
   for (const row of articles) {
@@ -33,9 +43,7 @@ db.transaction(() => {
     seen.set(base, count + 1);
     update.run(slug, row.id);
   }
+  db.prepare("INSERT OR REPLACE INTO _meta VALUES ('slug_version', '2')").run();
 })();
 
-console.log(`Updated ${articles.length} articles`);
-
-const sample = db.prepare('SELECT id, slug FROM articles ORDER BY id DESC LIMIT 10').all();
-sample.forEach(r => console.log(r.id, '|', r.slug));
+console.log(`[reslug] done — ${articles.length} articles updated`);
