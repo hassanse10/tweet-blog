@@ -1,34 +1,45 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { getArticleById, getRelatedArticles } from '../../../lib/db';
+import { notFound, permanentRedirect } from 'next/navigation';
+import { getArticleById, getArticleBySlug, getRelatedArticles } from '../../../lib/db';
 import ArticleStack from '../../components/ArticleStack';
 
 export const dynamic = 'force-dynamic';
 
 const BASE_URL = 'https://1minai.site';
+const PUBLISHER_LOGO = `${BASE_URL}/icon.png`;
+
+function resolveArticle(param) {
+  if (/^\d+$/.test(param)) return getArticleById(Number(param));
+  return getArticleBySlug(param);
+}
 
 export async function generateMetadata({ params }) {
-  const article = getArticleById(Number(params.id));
+  const article = resolveArticle(params.id);
   if (!article) return {};
 
   const lines = article.summary.split('\n').filter(Boolean);
   const headline = lines[0] || 'AI Update';
   const description = lines.slice(1).join(' ').slice(0, 160);
+  const canonicalUrl = `${BASE_URL}/article/${article.slug}`;
 
   return {
     title: `${headline} | AI Digest`,
     description,
-    alternates: { canonical: `${BASE_URL}/article/${params.id}` },
+    alternates: { canonical: canonicalUrl },
     openGraph: {
       title: headline,
       description,
+      url: canonicalUrl,
       type: 'article',
       publishedTime: article.created_at,
+      modifiedTime: article.created_at,
       authors: [article.author],
+      siteName: 'AI Digest',
       images: article.image_url ? [{ url: article.image_url, width: 1200, height: 630 }] : [],
     },
     twitter: {
       card: 'summary_large_image',
+      site: '@1minai',
       title: headline,
       description,
       images: article.image_url ? [article.image_url] : [],
@@ -37,16 +48,21 @@ export async function generateMetadata({ params }) {
 }
 
 export default function ArticlePage({ params }) {
-  const article = getArticleById(Number(params.id));
+  const param = params.id;
+  const article = resolveArticle(param);
   if (!article) notFound();
+
+  // Redirect numeric IDs and mismatched slugs to canonical slug URL
+  if (/^\d+$/.test(param) || param !== article.slug) {
+    permanentRedirect(`/article/${article.slug}`);
+  }
 
   const related = getRelatedArticles(article.id, article.category, 3);
 
   const lines = article.summary.split('\n').filter(Boolean);
   const headline = lines[0] || 'Untitled';
   const description = lines.slice(1).join(' ').slice(0, 160);
-
-  // JSON-LD schemas
+  const canonicalUrl = `${BASE_URL}/article/${article.slug}`;
   const faqs = Array.isArray(article.faqs) ? article.faqs : [];
 
   const articleJsonLd = {
@@ -56,9 +72,26 @@ export default function ArticlePage({ params }) {
     description,
     author: { '@type': 'Organization', name: article.author },
     datePublished: article.created_at,
-    publisher: { '@type': 'Organization', name: 'AI Digest' },
-    mainEntityOfPage: { '@type': 'WebPage', '@id': `${BASE_URL}/article/${article.id}` },
+    dateModified: article.created_at,
+    publisher: {
+      '@type': 'Organization',
+      name: 'AI Digest',
+      logo: { '@type': 'ImageObject', url: PUBLISHER_LOGO },
+    },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
     ...(article.image_url && { image: article.image_url }),
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+      ...(article.category
+        ? [{ '@type': 'ListItem', position: 2, name: article.category, item: `${BASE_URL}/topic/${article.category.toLowerCase()}` }]
+        : []),
+      { '@type': 'ListItem', position: article.category ? 3 : 2, name: headline, item: canonicalUrl },
+    ],
   };
 
   const faqJsonLd = faqs.length ? {
@@ -82,6 +115,7 @@ export default function ArticlePage({ params }) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       {faqJsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />}
       {videoJsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd) }} />}
 
