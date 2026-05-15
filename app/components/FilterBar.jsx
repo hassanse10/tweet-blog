@@ -1,51 +1,72 @@
 'use client';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-const CATEGORIES = ['Research', 'Product', 'Safety', 'Business', 'News'];
+const CATEGORIES = [
+  { label: 'Research', color: 'var(--cat-research)' },
+  { label: 'Product',  color: 'var(--cat-product)'  },
+  { label: 'Safety',   color: 'var(--cat-safety)'   },
+  { label: 'Business', color: 'var(--cat-business)' },
+  { label: 'News',     color: 'var(--cat-news)'     },
+];
 
 export default function FilterBar({ sources }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const activeSource = searchParams.get('source') || '';
+  const activeSource   = searchParams.get('source')   || '';
   const activeCategory = searchParams.get('category') || '';
 
   function setParam(key, value) {
     const params = new URLSearchParams(searchParams.toString());
-    if (value) {
-      params.set(key, value);
-    } else {
-      params.delete(key);
-    }
+    value ? params.set(key, value) : params.delete(key);
     params.delete('page');
     router.push(`/?${params.toString()}`);
   }
 
-  const pill = (active, onClick, label) => (
-    <button
-      key={label}
-      onClick={onClick}
-      className={`px-3 py-1 rounded-full text-xs font-medium transition whitespace-nowrap ${
-        active
-          ? 'bg-blue-600 text-white'
-          : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
-      }`}
-    >
-      {label}
-    </button>
-  );
+  const pillBase = {
+    display: 'inline-flex', alignItems: 'center', gap: 7,
+    padding: '7px 14px', borderRadius: 999, fontSize: 13,
+    cursor: 'pointer', border: 'none', fontFamily: 'inherit',
+    transition: 'all 0.15s ease', whiteSpace: 'nowrap',
+  };
+
+  const activePill = { ...pillBase, background: 'var(--text-primary)', color: 'var(--bg-base)', fontWeight: 500 };
+  const inactivePill = { ...pillBase, background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border)', fontWeight: 400 };
 
   return (
-    <div className="space-y-2">
-      <div className="flex flex-wrap gap-2 items-center">
-        <span className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">Source</span>
-        {pill(!activeSource, () => setParam('source', ''), 'All')}
-        {sources.map((s) => pill(activeSource === s, () => setParam('source', activeSource === s ? '' : s), s))}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      {/* Category pills */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
+        <button style={!activeCategory ? activePill : inactivePill}
+          onClick={() => setParam('category', '')}>
+          All
+        </button>
+        {CATEGORIES.map(({ label, color }) => (
+          <button key={label}
+            style={activeCategory === label ? activePill : inactivePill}
+            onClick={() => setParam('category', activeCategory === label ? '' : label)}>
+            <span className="cat-dot" style={{ background: color, width: 5, height: 5 }} />
+            {label}
+          </button>
+        ))}
       </div>
-      <div className="flex flex-wrap gap-2 items-center">
-        <span className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">Category</span>
-        {pill(!activeCategory, () => setParam('category', ''), 'All')}
-        {CATEGORIES.map((c) => pill(activeCategory === c, () => setParam('category', activeCategory === c ? '' : c), c))}
-      </div>
+
+      {/* Source pills */}
+      {sources.length > 0 && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
+          <span className="aid-kicker" style={{ marginRight: 4 }}>Source</span>
+          <button style={!activeSource ? activePill : inactivePill}
+            onClick={() => setParam('source', '')}>
+            All
+          </button>
+          {sources.map((s) => (
+            <button key={s}
+              style={activeSource === s ? activePill : inactivePill}
+              onClick={() => setParam('source', activeSource === s ? '' : s)}>
+              {s}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

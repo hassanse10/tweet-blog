@@ -4,12 +4,12 @@ import Link from 'next/link';
 import ArticleImage from './ArticleImage';
 import RatingButtons from './RatingButtons';
 
-const CATEGORY_COLORS = {
-  Research: 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300',
-  Product:  'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
-  Safety:   'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300',
-  Business: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
-  News:     'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300',
+const CAT_COLOR = {
+  Research: 'var(--cat-research)',
+  Product:  'var(--cat-product)',
+  Safety:   'var(--cat-safety)',
+  Business: 'var(--cat-business)',
+  News:     'var(--cat-news)',
 };
 
 function readingTime(text) {
@@ -25,150 +25,218 @@ function toSlug(text) {
 }
 
 export default function ArticleContent({ article, related = [] }) {
-  const lines = article.summary.split('\n').filter(Boolean);
+  const lines    = article.summary.split('\n').filter(Boolean);
   const headline = lines[0] || 'Untitled';
-
   const sections = Array.isArray(article.sections) ? article.sections : [];
-  const faqs = Array.isArray(article.faqs) ? article.faqs : [];
-
+  const faqs     = Array.isArray(article.faqs)     ? article.faqs     : [];
   const paragraphs = sections.length ? [] : lines.slice(1).filter(Boolean);
-  const mins = readingTime(article.summary);
-  const catColor = CATEGORY_COLORS[article.category] || CATEGORY_COLORS.News;
-  const showToc = sections.length > 1 || faqs.length > 0;
+  const mins     = readingTime(article.summary);
+  const catColor = CAT_COLOR[article.category] || 'var(--cat-news)';
+  const showToc  = sections.length > 1 || faqs.length > 0;
 
   return (
-    <article className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-      <ArticleImage src={article.image_url} author={article.author} alt={headline} className="h-64" />
+    <article style={{ paddingBottom: 120 }}>
 
-      <div className="p-6 max-w-2xl mx-auto">
-        {/* Meta */}
-        <div className="flex flex-wrap items-center gap-2 mb-3">
-          {article.category && (
-            <Link
-              href={`/topic/${encodeURIComponent(article.category.toLowerCase())}`}
-              className={`text-xs font-semibold px-2 py-0.5 rounded-full hover:opacity-80 transition ${catColor}`}
-            >
-              {article.category}
-            </Link>
-          )}
-          <span className="text-xs text-gray-400 dark:text-gray-500">
-            <time dateTime={article.created_at}>{formatDate(article.created_at)}</time>
-          </span>
-          <span className="text-xs text-gray-400">·</span>
-          <span className="text-xs text-gray-500 dark:text-gray-400">{article.author}</span>
-          <span className="text-xs text-gray-400">·</span>
-          <span className="text-xs text-gray-400 dark:text-gray-500">{mins} min read</span>
+      {/* ── Hero image ── */}
+      {article.image_url && (
+        <div style={{ width: '100%', aspectRatio: '21/9', overflow: 'hidden', marginBottom: 0 }}>
+          <ArticleImage src={article.image_url} author={article.author} alt={headline}
+            className="w-full h-full object-cover" />
+        </div>
+      )}
+
+      {/* ── Headline block ── */}
+      <div style={{ padding: '48px 56px 0', maxWidth: 1100, margin: '0 auto' }}>
+        {/* Kicker */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
+          <span className="cat-dot" style={{ background: catColor }} />
+          <Link href={`/topic/${encodeURIComponent((article.category || 'news').toLowerCase())}`}
+            className="aid-kicker" style={{ color: catColor }}>
+            {article.category || 'News'}
+          </Link>
+          <span className="aid-kicker" style={{ color: 'var(--text-muted)' }}>/</span>
+          <span className="aid-kicker">{article.author}</span>
         </div>
 
-        {/* Headline */}
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-5 leading-snug">{headline}</h1>
+        {/* Title */}
+        <h1 className="aid-display" style={{
+          fontSize: 52, lineHeight: 1.02, margin: '0 0 28px',
+          color: 'var(--text-primary)', maxWidth: 900,
+        }}>
+          {headline}
+        </h1>
 
-        {/* Table of Contents */}
+        {/* Byline */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap',
+          paddingBottom: 28, borderBottom: '1px solid var(--border)',
+        }}>
+          <span className="aid-meta">{article.author}</span>
+          <span style={{ color: 'var(--text-muted)' }}>·</span>
+          <span className="aid-meta">{formatDate(article.created_at)}</span>
+          <span style={{ color: 'var(--text-muted)' }}>·</span>
+          <span className="aid-meta" style={{
+            background: 'var(--accent-glow)', color: 'var(--accent-bright)',
+            padding: '3px 10px', borderRadius: 999,
+          }}>
+            {mins} min read
+          </span>
+          {/^https?:\/\//.test(article.tweet_url) && (
+            <>
+              <div style={{ flex: 1 }} />
+              <a href={article.tweet_url} target="_blank" rel="noopener noreferrer"
+                className="aid-meta" style={{ color: 'var(--accent)', textDecoration: 'underline', textDecorationColor: 'var(--accent-glow)' }}>
+                Read original →
+              </a>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* ── Body: sidebar TOC + prose ── */}
+      <div style={{
+        padding: '56px 56px 0', maxWidth: 1100, margin: '0 auto',
+        display: 'grid',
+        gridTemplateColumns: showToc ? '200px 1fr' : '1fr',
+        gap: showToc ? 72 : 0,
+      }}>
+
+        {/* Sidebar TOC */}
         {showToc && (
-          <nav aria-label="Table of contents" className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6 border border-gray-200 dark:border-gray-700">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">Contents</p>
-            <ol className="space-y-1 list-none">
+          <aside style={{ position: 'sticky', top: 88, alignSelf: 'start' }}>
+            <p className="aid-kicker" style={{ marginBottom: 16 }}>In this brief</p>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
               {sections.map((s, i) => (
-                <li key={i}>
-                  <a href={`#${article.id}-${toSlug(s.heading)}`} className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-                    {i + 1}. {s.heading}
+                <li key={i} style={{ position: 'relative', paddingLeft: 14 }}>
+                  {i === 0 && (
+                    <span style={{
+                      position: 'absolute', left: 0, top: 6,
+                      width: 5, height: 5, borderRadius: 999,
+                      background: 'var(--accent)',
+                    }} />
+                  )}
+                  <a href={`#section-${article.id}-${toSlug(s.heading)}`} style={{
+                    fontSize: 13, lineHeight: 1.4,
+                    color: i === 0 ? 'var(--text-primary)' : 'var(--text-tertiary)',
+                    transition: 'color 0.15s',
+                  }}>
+                    {s.heading}
                   </a>
                 </li>
               ))}
               {faqs.length > 0 && (
-                <li>
-                  <a href={`#${article.id}-faq`} className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-                    {sections.length + 1}. Frequently Asked Questions
+                <li style={{ paddingLeft: 14 }}>
+                  <a href={`#${article.id}-faq`} style={{ fontSize: 13, color: 'var(--text-tertiary)' }}>
+                    FAQ
                   </a>
                 </li>
               )}
-            </ol>
-          </nav>
+            </ul>
+
+            <div style={{ marginTop: 40, paddingTop: 24, borderTop: '1px solid var(--border)' }}>
+              <RatingButtons articleId={article.id} initialRating={article.rating} />
+            </div>
+          </aside>
         )}
 
-        {/* Body */}
-        {sections.length > 0 ? (
-          <div className="space-y-6 text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-            {sections.map((s, i) => (
-              <section key={i}>
-                <h2 id={`${article.id}-${toSlug(s.heading)}`} className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2 scroll-mt-20">
-                  {s.heading}
-                </h2>
+        {/* Prose body */}
+        <div className="aid-prose" style={{ maxWidth: 680 }}>
+          {sections.length > 0 ? (
+            sections.map((s, i) => (
+              <section key={i} id={`section-${article.id}-${toSlug(s.heading)}`} style={{ marginBottom: '2.5em', scrollMarginTop: 100 }}>
+                <h2>{s.heading}</h2>
                 <p>{s.body}</p>
               </section>
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-4 text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-            {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
-          </div>
-        )}
+            ))
+          ) : (
+            paragraphs.map((p, i) => (
+              <p key={i} className={i === 0 ? 'lede' : ''}>{p}</p>
+            ))
+          )}
 
-        {/* YouTube */}
-        {/^[a-zA-Z0-9_-]{11}$/.test(article.youtube_video_id) && (
-          <div className="mt-8">
-            <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3">Related Video</h2>
-            <div className="relative w-full rounded-lg overflow-hidden" style={{ paddingBottom: '56.25%' }}>
-              <iframe
-                className="absolute inset-0 w-full h-full"
-                src={`https://www.youtube.com/embed/${article.youtube_video_id}`}
-                title={headline}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                loading="lazy"
-              />
+          {/* YouTube */}
+          {/^[a-zA-Z0-9_-]{11}$/.test(article.youtube_video_id) && (
+            <div style={{ margin: '2em 0' }}>
+              <div style={{ position: 'relative', width: '100%', borderRadius: 10, overflow: 'hidden', paddingBottom: '56.25%' }}>
+                <iframe
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+                  src={`https://www.youtube.com/embed/${article.youtube_video_id}`}
+                  title={headline}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen loading="lazy"
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* FAQ */}
-        {faqs.length > 0 && (
-          <div id={`${article.id}-faq`} className="mt-8 scroll-mt-20">
-            <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-4">Frequently Asked Questions</h2>
-            <div className="space-y-2">
-              {faqs.map((f, i) => (
-                <details key={i} className="group border border-gray-200 dark:border-gray-700 rounded-lg">
-                  <summary className="flex items-center justify-between p-4 cursor-pointer text-sm font-medium text-gray-900 dark:text-gray-100 list-none">
-                    {f.question}
-                    <span className="ml-2 text-gray-400 shrink-0 group-open:rotate-180 transition-transform duration-200">▾</span>
-                  </summary>
-                  <p className="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{f.answer}</p>
-                </details>
-              ))}
+          {/* FAQ */}
+          {faqs.length > 0 && (
+            <div id={`${article.id}-faq`} style={{ marginTop: '2.5em', scrollMarginTop: 100 }}>
+              <h2>Frequently Asked Questions</h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {faqs.map((f, i) => (
+                  <details key={i} style={{
+                    border: '1px solid var(--border)', borderRadius: 8,
+                    overflow: 'hidden',
+                  }}>
+                    <summary style={{
+                      padding: '14px 18px', cursor: 'pointer', fontSize: 15,
+                      fontWeight: 500, color: 'var(--text-primary)', listStyle: 'none',
+                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    }}>
+                      {f.question}
+                      <span style={{ color: 'var(--text-tertiary)', marginLeft: 12, flexShrink: 0 }}>▾</span>
+                    </summary>
+                    <p style={{ padding: '0 18px 16px', fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0 }}>
+                      {f.answer}
+                    </p>
+                  </details>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Related articles (internal links) */}
-        {related.length > 0 && (
-          <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
-            <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-4">Related Articles</h2>
-            <div className="space-y-2">
-              {related.map((r) => {
-                const rHeadline = r.summary.split('\n').find(Boolean) || 'Article';
-                return (
-                  <Link key={r.id} href={`/article/${r.slug || r.id}`}
-                    className="block p-3 rounded-lg border border-gray-100 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-colors">
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2">{rHeadline}</p>
-                    <p className="text-xs text-gray-400 mt-1">{r.author} · {formatDate(r.created_at)}</p>
-                  </Link>
-                );
-              })}
+          {/* Rating (when no TOC sidebar) */}
+          {!showToc && (
+            <div style={{ marginTop: '2em', paddingTop: '2em', borderTop: '1px solid var(--border)' }}>
+              <RatingButtons articleId={article.id} initialRating={article.rating} />
             </div>
-          </div>
-        )}
-
-        {/* Footer */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
-          <RatingButtons articleId={article.id} initialRating={article.rating} />
-          {/^https?:\/\//.test(article.tweet_url) && (
-            <a href={article.tweet_url} target="_blank" rel="noopener noreferrer"
-              className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-              Read original post →
-            </a>
           )}
         </div>
       </div>
+
+      {/* ── Related articles ── */}
+      {related.length > 0 && (
+        <div style={{
+          maxWidth: 1100, margin: '64px auto 0',
+          padding: '0 56px',
+          borderTop: '1px solid var(--border)', paddingTop: 48,
+        }}>
+          <p className="aid-kicker" style={{ marginBottom: 24 }}>Continue reading</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+            {related.map((r) => {
+              const rHeadline = r.summary.split('\n').find(Boolean) || 'Article';
+              return (
+                <Link key={r.id} href={`/article/${r.slug || r.id}`} style={{
+                  display: 'block', padding: '18px 20px',
+                  background: 'var(--bg-card)', borderRadius: 10,
+                  border: '1px solid var(--border)',
+                  transition: 'border-color 0.2s',
+                }}>
+                  <span className="cat-dot" style={{
+                    background: CAT_COLOR[r.category] || 'var(--cat-news)',
+                    display: 'block', marginBottom: 10,
+                  }} />
+                  <p style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)', lineHeight: 1.3, margin: '0 0 8px' }}>
+                    {rHeadline}
+                  </p>
+                  <p className="aid-meta">{r.author} · {formatDate(r.created_at)}</p>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </article>
   );
 }
