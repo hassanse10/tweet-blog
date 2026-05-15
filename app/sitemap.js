@@ -16,11 +16,12 @@ export default function sitemap() {
       changeFrequency: 'hourly',
       priority: 0.9,
     })),
-    ...articles.map((a) => ({
-      url: `${BASE_URL}/article/${a.id}`,
-      lastModified: new Date(a.created_at),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    })),
+    ...articles
+      .map((a) => ({
+        url: `${BASE_URL}/article/${a.slug}`,
+        lastModified: new Date(a.created_at),
+        changeFrequency: 'monthly',
+        priority: 0.8,
+      })),
   ];
 }

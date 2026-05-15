@@ -55,8 +55,8 @@ export default function ArticleStack({ initialArticle, initialRelated }) {
       const obs = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
-            const id = articles[i]?.article?.id;
-            if (id) window.history.replaceState({}, '', `/article/${id}`);
+            const a = articles[i]?.article;
+            if (a?.slug) window.history.replaceState({}, '', `/article/${a.slug}`);
           }
         },
         { rootMargin: '-30% 0px -30% 0px' }

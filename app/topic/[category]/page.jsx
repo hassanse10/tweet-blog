@@ -17,7 +17,7 @@ export async function generateMetadata({ params }) {
   const label = category.charAt(0).toUpperCase() + category.slice(1);
   return {
     title: `${label} — AI Digest`,
-    description: `All ${label} articles from top AI companies, auto-updated every 6 hours.`,
+    description: `Latest ${label} news from OpenAI, Anthropic, Google and more — summarized in minutes.`,
     alternates: { canonical: `${BASE_URL}/topic/${category}` },
     openGraph: {
       title: `${label} — AI Digest`,
@@ -59,7 +59,7 @@ export default function TopicPage({ params, searchParams }) {
             return (
               <Link
                 key={a.id}
-                href={`/article/${a.id}`}
+                href={`/article/${a.slug}`}
                 className="block p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-blue-300 dark:hover:border-blue-600 transition-colors"
               >
                 <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 mb-1">{headline}</p>
