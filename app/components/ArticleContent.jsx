@@ -37,13 +37,11 @@ export default function ArticleContent({ article, related = [] }) {
   return (
     <article style={{ paddingBottom: 120 }}>
 
-      {/* ── Hero image ── */}
-      {article.image_url && (
-        <div style={{ width: '100%', aspectRatio: '21/9', overflow: 'hidden', marginBottom: 0 }}>
-          <ArticleImage src={article.image_url} author={article.author} alt={headline}
-            className="w-full h-full object-cover" />
-        </div>
-      )}
+      {/* ── Hero image (always shown — ArticleImage handles gradient fallback) ── */}
+      <div style={{ width: '100%', aspectRatio: '21/9', overflow: 'hidden' }}>
+        <ArticleImage src={article.image_url} author={article.author} alt={headline}
+          className="w-full h-full object-cover" />
+      </div>
 
       {/* ── Headline block ── */}
       <div style={{ padding: '48px 56px 0', maxWidth: 1100, margin: '0 auto' }}>
