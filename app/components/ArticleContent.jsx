@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import ArticleImage from './ArticleImage';
 import RatingButtons from './RatingButtons';
@@ -22,6 +23,130 @@ function formatDate(d) {
 
 function toSlug(text) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+/* ── Video Section ── */
+function VideoSection({ videoId, headline }) {
+  const [playing, setPlaying] = useState(false);
+
+  const sectionStyle = {
+    margin: '2.5em 0',
+    borderRadius: 12,
+    overflow: 'hidden',
+    border: '1px solid var(--border)',
+    background: 'var(--bg-card)',
+  };
+
+  const headerStyle = {
+    display: 'flex', alignItems: 'center', gap: 10,
+    padding: '14px 18px',
+    borderBottom: '1px solid var(--border)',
+  };
+
+  if (videoId && /^[a-zA-Z0-9_-]{11}$/.test(videoId)) {
+    const thumb = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+
+    return (
+      <div style={sectionStyle}>
+        <div style={headerStyle}>
+          {/* YouTube icon */}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#ef4444">
+            <path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 00.5 6.2 31 31 0 000 12a31 31 0 00.5 5.8 3 3 0 002.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 002.1-2.1A31 31 0 0024 12a31 31 0 00-.5-5.8z"/>
+            <polygon fill="white" points="9.75,15.02 15.5,12 9.75,8.98"/>
+          </svg>
+          <span className="aid-kicker" style={{ color: 'var(--text-primary)' }}>Watch video</span>
+        </div>
+
+        {!playing ? (
+          <div
+            onClick={() => setPlaying(true)}
+            style={{
+              position: 'relative', cursor: 'pointer',
+              aspectRatio: '16/9', overflow: 'hidden', background: '#000',
+            }}
+          >
+            <img
+              src={thumb}
+              alt="Video thumbnail"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.85 }}
+              onError={(e) => { e.target.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`; }}
+            />
+            {/* Play button */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <div style={{
+                width: 68, height: 68, borderRadius: '50%',
+                background: 'rgba(0,0,0,0.75)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: '2px solid rgba(255,255,255,0.3)',
+                transition: 'transform 0.2s, background 0.2s',
+              }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white" style={{ marginLeft: 4 }}>
+                  <polygon points="5,3 19,12 5,21" />
+                </svg>
+              </div>
+            </div>
+            <div style={{
+              position: 'absolute', bottom: 12, right: 12,
+              background: 'rgba(0,0,0,0.7)', borderRadius: 4,
+              padding: '3px 8px',
+            }}>
+              <span className="aid-mono" style={{ fontSize: 10, color: '#fff' }}>Click to play</span>
+            </div>
+          </div>
+        ) : (
+          <div style={{ aspectRatio: '16/9', background: '#000' }}>
+            <iframe
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
+              title={headline}
+              style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // No video ID — show YouTube search fallback
+  const searchQuery = encodeURIComponent(`${headline} AI`);
+  return (
+    <div style={sectionStyle}>
+      <div style={headerStyle}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--text-tertiary)">
+          <path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 00.5 6.2 31 31 0 000 12a31 31 0 00.5 5.8 3 3 0 002.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 002.1-2.1A31 31 0 0024 12a31 31 0 00-.5-5.8z"/>
+          <polygon fill="var(--bg-card)" points="9.75,15.02 15.5,12 9.75,8.98"/>
+        </svg>
+        <span className="aid-kicker" style={{ color: 'var(--text-secondary)' }}>Related video</span>
+      </div>
+      <div style={{ padding: '20px 20px 22px', display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div style={{ flex: 1 }}>
+          <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: '0 0 12px', lineHeight: 1.5 }}>
+            Watch explainers and coverage of this topic on YouTube.
+          </p>
+          <a
+            href={`https://www.youtube.com/results?search_query=${searchQuery}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '9px 18px', borderRadius: 8, fontSize: 13, fontWeight: 500,
+              background: '#ef4444', color: '#fff', textDecoration: 'none',
+              transition: 'opacity 0.15s',
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+              <polygon points="5,3 19,12 5,21"/>
+            </svg>
+            Search on YouTube
+          </a>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function ArticleContent({ article, related = [] }) {
@@ -152,20 +277,8 @@ export default function ArticleContent({ article, related = [] }) {
             ))
           )}
 
-          {/* YouTube */}
-          {/^[a-zA-Z0-9_-]{11}$/.test(article.youtube_video_id) && (
-            <div style={{ margin: '2em 0' }}>
-              <div style={{ position: 'relative', width: '100%', borderRadius: 10, overflow: 'hidden', paddingBottom: '56.25%' }}>
-                <iframe
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
-                  src={`https://www.youtube.com/embed/${article.youtube_video_id}`}
-                  title={headline}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen loading="lazy"
-                />
-              </div>
-            </div>
-          )}
+          {/* Video section — always shown, falls back to YouTube search */}
+          <VideoSection videoId={article.youtube_video_id} headline={headline} />
 
           {/* FAQ */}
           {faqs.length > 0 && (

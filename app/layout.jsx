@@ -3,6 +3,8 @@ import './globals.css';
 import SearchBar from './components/SearchBar';
 import NotificationBanner from './components/NotificationBanner';
 import ReadingProgress from './components/ReadingProgress';
+import NewsTicker from './components/NewsTicker';
+import { searchArticles } from '../lib/db';
 
 const BASE_URL = 'https://1minai.site';
 
@@ -26,6 +28,15 @@ const websiteJsonLd = {
 };
 
 export default function RootLayout({ children }) {
+  // Fetch latest headlines for the ticker
+  const { articles: tickerArticles } = searchArticles({ limit: 20 });
+  const tickerItems = tickerArticles.map((a) => ({
+    slug:     a.slug,
+    headline: (a.summary.split('\n').filter(Boolean)[0] || 'Untitled').slice(0, 80),
+    category: a.category,
+    author:   a.author,
+  }));
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen">
@@ -83,6 +94,9 @@ export default function RootLayout({ children }) {
 
           {/* Notification banner sits just below the nav bar */}
           <NotificationBanner />
+
+          {/* Live news ticker */}
+          <NewsTicker items={tickerItems} />
         </header>
 
         <main style={{ maxWidth: 1440, margin: '0 auto' }}>

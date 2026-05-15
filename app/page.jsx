@@ -52,12 +52,23 @@ function HeroCard({ article }) {
   const headline = lines[0] || 'Untitled';
   const excerpt = lines.slice(1).join(' ').slice(0, 180);
   const mins = readingTime(article.summary);
+  const hasVideo = /^[a-zA-Z0-9_-]{11}$/.test(article.youtube_video_id);
 
   return (
     <Link href={`/article/${article.slug}`} className="card-lift" style={{ display: 'block' }}>
-      <div style={{ borderRadius: 12, overflow: 'hidden', marginBottom: 24, aspectRatio: '16/10' }}>
+      <div style={{ borderRadius: 12, overflow: 'hidden', marginBottom: 24, aspectRatio: '16/10', position: 'relative' }}>
         <ArticleImage src={article.image_url} author={article.author} alt={headline}
           className="w-full h-full object-cover" />
+        {hasVideo && (
+          <div style={{
+            position: 'absolute', bottom: 12, right: 12,
+            background: 'rgba(239,68,68,0.9)', borderRadius: 6,
+            padding: '5px 11px', display: 'flex', alignItems: 'center', gap: 6,
+          }}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+            <span style={{ fontSize: 11, color: '#fff', fontFamily: 'var(--font-mono)', fontWeight: 500 }}>VIDEO</span>
+          </div>
+        )}
       </div>
       <Kicker category={article.category} author={article.author} />
       <h2 className="aid-display card-headline" style={{
@@ -131,6 +142,7 @@ function GridCard({ article }) {
   const headline = lines[0] || 'Untitled';
   const excerpt = lines.slice(1).join(' ').slice(0, 100);
   const mins = readingTime(article.summary);
+  const hasVideo = /^[a-zA-Z0-9_-]{11}$/.test(article.youtube_video_id);
 
   return (
     <Link href={`/article/${article.slug}`} className="card-lift" style={{
@@ -141,9 +153,19 @@ function GridCard({ article }) {
       overflow: 'hidden',
       transition: 'border-color 0.2s ease, transform 0.25s ease',
     }}>
-      <div style={{ aspectRatio: '16/9', overflow: 'hidden' }}>
+      <div style={{ aspectRatio: '16/9', overflow: 'hidden', position: 'relative' }}>
         <ArticleImage src={article.image_url} author={article.author} alt={headline}
           className="w-full h-full object-cover" />
+        {hasVideo && (
+          <div style={{
+            position: 'absolute', bottom: 8, right: 8,
+            background: 'rgba(239,68,68,0.9)', borderRadius: 5,
+            padding: '3px 8px', display: 'flex', alignItems: 'center', gap: 5,
+          }}>
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+            <span style={{ fontSize: 10, color: '#fff', fontFamily: 'var(--font-mono)', fontWeight: 500 }}>VIDEO</span>
+          </div>
+        )}
       </div>
       <div style={{ padding: '18px 20px 20px' }}>
         <Kicker category={article.category} author={article.author} />
