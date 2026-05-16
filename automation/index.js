@@ -7,6 +7,7 @@ const { generateArticle } = require('./openrouter');
 const { openDb, getExistingTweetIds, saveArticle } = require('./db');
 const { sendNotifications } = require('./notify');
 const { searchYouTube } = require('./youtube');
+const { fetchUnsplashImage } = require('./unsplash');
 
 async function run() {
   const apiKey = process.env.OPENROUTER_API_KEY;
@@ -36,6 +37,16 @@ async function run() {
       ]);
       if (youtubeVideoId) console.log(`  YouTube: ${youtubeVideoId}`);
 
+      // Use RSS image if available, otherwise fetch from Unsplash
+      let imageUrl = item.image || null;
+      if (!imageUrl && process.env.UNSPLASH_ACCESS_KEY) {
+        imageUrl = await Promise.race([
+          fetchUnsplashImage(process.env.UNSPLASH_ACCESS_KEY, article.headline, article.category),
+          timeout(10000),
+        ]).catch(() => null);
+        if (imageUrl) console.log(`  Unsplash image fetched`);
+      }
+
       const result = saveArticle(db, {
         tweetId: item.id,
         author: item.author,
@@ -46,7 +57,7 @@ async function run() {
         faqs: article.faqs,
         category: article.category,
         youtubeVideoId,
-        imageUrl: item.image || null,
+        imageUrl,
       });
 
       if (result) {
