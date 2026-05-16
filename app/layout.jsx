@@ -5,6 +5,7 @@ import NotificationBanner from './components/NotificationBanner';
 import ReadingProgress from './components/ReadingProgress';
 import NewsTicker from './components/NewsTicker';
 import Logo from './components/Logo';
+import ThemeToggle from './components/ThemeToggle';
 import { searchArticles } from '../lib/db';
 
 const BASE_URL = 'https://1minai.site';
@@ -48,6 +49,8 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="google-adsense-account" content="ca-pub-8965050599796410" />
+        {/* Prevent flash of wrong theme */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){var s=localStorage.getItem('theme');var p=window.matchMedia('(prefers-color-scheme: dark)').matches;if(s==='light'||(!s&&!p)){document.documentElement.classList.add('light');}})();` }} />
       </head>
       <body className="min-h-screen">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
@@ -56,7 +59,7 @@ export default function RootLayout({ children }) {
         {/* ── Navbar ── */}
         <header style={{
           position: 'sticky', top: 0, zIndex: 40,
-          background: 'rgba(10,14,20,0.92)',
+          background: 'var(--nav-bg)',
           backdropFilter: 'blur(16px)',
           borderBottom: '1px solid var(--border)',
         }}>
@@ -76,6 +79,9 @@ export default function RootLayout({ children }) {
             </div>
 
             <div style={{ flex: 1 }} />
+
+            {/* Theme toggle */}
+            <ThemeToggle />
 
             {/* Subscribe CTA */}
             <a href="#notify" style={{

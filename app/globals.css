@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Design tokens ── */
+/* ── Design tokens — dark (default) ── */
 :root {
   --bg-deep:        #07090d;
   --bg-base:        #0a0e14;
@@ -20,8 +20,10 @@
   --accent:         #3b82f6;
   --accent-bright:  #60a5fa;
   --accent-glow:    rgba(59,130,246,0.18);
+  --nav-bg:         rgba(10,14,20,0.92);
+  --prose-body:     #c8d0de;
+  --prose-lede:     #e0e5ed;
 
-  /* Category accent colors — used as dots/rules only, never filled badges */
   --cat-research: #22d3ee;
   --cat-product:  #34d399;
   --cat-safety:   #fbbf24;
@@ -33,9 +35,40 @@
   --font-mono:    "JetBrains Mono", "SF Mono", Menlo, monospace;
 }
 
+/* ── Design tokens — light ── */
+html.light {
+  color-scheme: light;
+  --bg-deep:        #e8ecf2;
+  --bg-base:        #f4f6fa;
+  --bg-surface:     #ffffff;
+  --bg-elevated:    #edf0f6;
+  --bg-card:        #ffffff;
+  --border:         rgba(0,0,0,0.08);
+  --border-strong:  rgba(0,0,0,0.16);
+  --text-primary:   #0d1117;
+  --text-secondary: #4b5563;
+  --text-tertiary:  #6b7280;
+  --text-muted:     #9ca3af;
+  --accent:         #2563eb;
+  --accent-bright:  #1d4ed8;
+  --accent-glow:    rgba(37,99,235,0.1);
+  --nav-bg:         rgba(244,246,250,0.92);
+  --prose-body:     #374151;
+  --prose-lede:     #1f2937;
+
+  --cat-research: #0891b2;
+  --cat-product:  #059669;
+  --cat-safety:   #b45309;
+  --cat-business: #be185d;
+  --cat-news:     #2563eb;
+}
+
 @layer base {
   html { color-scheme: dark; }
+  html.light { color-scheme: light; }
   body {
+    transition: background 0.2s, color 0.2s;
+
     background: var(--bg-base);
     color: var(--text-primary);
     font-family: var(--font-sans);
@@ -93,14 +126,14 @@
 .aid-prose p {
   font-size: 18px;
   line-height: 1.72;
-  color: #d3d8e1;
+  color: var(--prose-body);
   margin: 0 0 1.25em;
   letter-spacing: -0.003em;
 }
 .aid-prose p.lede {
   font-size: 21px;
   line-height: 1.55;
-  color: #e8ebf1;
+  color: var(--prose-lede);
 }
 .aid-prose h2 {
   font-family: var(--font-display);
@@ -128,7 +161,7 @@
 .aid-prose ul li {
   font-size: 17px;
   line-height: 1.65;
-  color: #d3d8e1;
+  color: var(--prose-body);
   padding-left: 24px;
   position: relative;
   margin-bottom: 10px;
