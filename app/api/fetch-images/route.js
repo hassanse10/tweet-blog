@@ -24,7 +24,10 @@ async function fetchUnsplashImage(accessKey, headline, category) {
       signal: AbortSignal.timeout(8000),
     }
   );
-  if (!res.ok) return null;
+  if (!res.ok) {
+    console.warn(`Unsplash ${res.status} for query: ${query}`);
+    return null;
+  }
   const data = await res.json();
   return data.results?.[0]?.urls?.regular || null;
 }
@@ -43,7 +46,7 @@ export async function POST() {
   try {
     const db = openDb();
     const articles = db.prepare(
-      "SELECT id, summary, category FROM articles WHERE image_url = '' OR image_url IS NULL ORDER BY id DESC LIMIT 100"
+      "SELECT id, summary, category FROM articles WHERE image_url = '' OR image_url IS NULL ORDER BY id DESC LIMIT 40"
     ).all();
 
     if (!articles.length) return Response.json({ ok: true, updated: 0, message: 'No articles need images' });
