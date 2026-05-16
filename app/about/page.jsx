@@ -22,7 +22,7 @@ const SOURCES = [
 
 export default function AboutPage() {
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto', padding: '72px 56px 120px' }}>
+    <div className="page-pad" style={{ maxWidth: 800, margin: '0 auto', padding: '72px 56px 120px' }}>
 
       {/* Header */}
       <p className="aid-kicker" style={{ marginBottom: 20 }}>About us</p>
@@ -52,7 +52,7 @@ export default function AboutPage() {
       {/* How it works */}
       <section style={{ marginBottom: 64 }}>
         <p className="aid-kicker" style={{ marginBottom: 24, color: 'var(--text-muted)' }}>How it works</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
+        <div className="article-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
           {[
             { step: '01', title: 'Collect', desc: 'We monitor official announcements, research papers, and posts from leading AI organizations in real time.' },
             { step: '02', title: 'Summarize', desc: 'Each article is processed by AI to extract the key findings, context, and implications — in plain language.' },

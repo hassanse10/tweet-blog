@@ -188,6 +188,15 @@
 ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 
+/* ── Contact card hover ── */
+.contact-card {
+  display: flex; align-items: center; gap: 24;
+  padding: 24px 28px; border-radius: 12px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  transition: border-color 0.2s; text-decoration: none;
+}
+.contact-card:hover { border-color: var(--border-strong); }
+
 /* ── Responsive layout ── */
 @media (max-width: 1024px) {
   .nav-inner    { padding-left: 24px !important; padding-right: 24px !important; }

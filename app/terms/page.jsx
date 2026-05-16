@@ -38,7 +38,7 @@ function Li({ children }) {
 
 export default function TermsPage() {
   return (
-    <div style={{ maxWidth: 760, margin: '0 auto', padding: '72px 56px 120px' }}>
+    <div className="page-pad" style={{ maxWidth: 760, margin: '0 auto', padding: '72px 56px 120px' }}>
 
       <p className="aid-kicker" style={{ marginBottom: 20 }}>Legal</p>
       <h1 className="aid-display" style={{ fontSize: 52, margin: '0 0 12px', lineHeight: 1.02 }}>Terms of Service</h1>

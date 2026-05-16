@@ -29,7 +29,7 @@ const CHANNELS = [
 
 export default function ContactPage() {
   return (
-    <div style={{ maxWidth: 720, margin: '0 auto', padding: '72px 56px 120px' }}>
+    <div className="page-pad" style={{ maxWidth: 720, margin: '0 auto', padding: '72px 56px 120px' }}>
 
       <p className="aid-kicker" style={{ marginBottom: 20 }}>Contact us</p>
       <h1 className="aid-display" style={{ fontSize: 52, margin: '0 0 20px', lineHeight: 1.02 }}>
@@ -44,16 +44,7 @@ export default function ContactPage() {
       {/* Contact cards */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 64 }}>
         {CHANNELS.map(({ icon, label, value, href, desc }) => (
-          <a key={href} href={href} style={{
-            display: 'flex', alignItems: 'center', gap: 24,
-            padding: '24px 28px', borderRadius: 12,
-            background: 'var(--bg-card)', border: '1px solid var(--border)',
-            transition: 'border-color 0.2s',
-            textDecoration: 'none',
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--border-strong)'}
-          onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border)'}
-          >
+          <a key={href} href={href} className="contact-card">
             <span style={{ fontSize: 28, flexShrink: 0, width: 48, textAlign: 'center' }}>{icon}</span>
             <div style={{ flex: 1 }}>
               <p className="aid-kicker" style={{ margin: '0 0 4px', color: 'var(--text-muted)' }}>{label}</p>
