@@ -27,7 +27,7 @@ export async function generateMetadata({ params }) {
   const category = decodeURIComponent(params.category);
   const label = category.charAt(0).toUpperCase() + category.slice(1);
   return {
-    title: `${label} — AI Digest`,
+    title: `${label} — 1minAi`,
     description: `Latest ${label} news from OpenAI, Anthropic, Google and more — summarized in minutes.`,
     alternates: { canonical: `${BASE_URL}/topic/${category}` },
   };

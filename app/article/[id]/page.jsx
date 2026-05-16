@@ -23,7 +23,7 @@ export async function generateMetadata({ params }) {
   const canonicalUrl = `${BASE_URL}/article/${article.slug}`;
 
   return {
-    title: `${headline} | AI Digest`,
+    title: `${headline} | 1minAi`,
     description,
     alternates: { canonical: canonicalUrl },
     openGraph: {
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }) {
       publishedTime: article.created_at,
       modifiedTime: article.created_at,
       authors: [article.author],
-      siteName: 'AI Digest',
+      siteName: '1minAi',
       images: article.image_url ? [{ url: article.image_url, width: 1200, height: 630 }] : [],
     },
     twitter: {
@@ -75,7 +75,7 @@ export default function ArticlePage({ params }) {
     dateModified: article.created_at,
     publisher: {
       '@type': 'Organization',
-      name: 'AI Digest',
+      name: '1minAi',
       logo: { '@type': 'ImageObject', url: PUBLISHER_LOGO },
     },
     mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },

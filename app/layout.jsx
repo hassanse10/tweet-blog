@@ -4,13 +4,14 @@ import SearchBar from './components/SearchBar';
 import NotificationBanner from './components/NotificationBanner';
 import ReadingProgress from './components/ReadingProgress';
 import NewsTicker from './components/NewsTicker';
+import Logo from './components/Logo';
 import { searchArticles } from '../lib/db';
 
 const BASE_URL = 'https://1minai.site';
 
 export const metadata = {
-  title: 'AI Digest',
-  description: 'Breaking AI news from OpenAI, Anthropic, Google and more — summarized in minutes.',
+  title: '1minAi — AI News in 1 Minute',
+  description: 'Breaking AI news from OpenAI, Anthropic, Google DeepMind and more — summarized in 1 minute.',
   metadataBase: new URL(BASE_URL),
   verification: { google: 'WPXHcWraaMEOgVi-aMdMFDZ9i4gwVlptMva0yl1Wu00' },
 };
@@ -18,7 +19,7 @@ export const metadata = {
 const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: 'AI Digest',
+  name: '1minAi',
   url: BASE_URL,
   potentialAction: {
     '@type': 'SearchAction',
@@ -27,8 +28,14 @@ const websiteJsonLd = {
   },
 };
 
+const footerLinks = [
+  { label: 'About',   href: '/about'   },
+  { label: 'Contact', href: '/contact' },
+  { label: 'Privacy', href: '/privacy' },
+  { label: 'Terms',   href: '/terms'   },
+];
+
 export default function RootLayout({ children }) {
-  // Fetch latest headlines for the ticker
   const { articles: tickerArticles } = searchArticles({ limit: 20 });
   const tickerItems = tickerArticles.map((a) => ({
     slug:     a.slug,
@@ -56,21 +63,8 @@ export default function RootLayout({ children }) {
             display: 'flex', alignItems: 'center', gap: 32,
           }}>
             {/* Logo */}
-            <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
-              <span style={{
-                display: 'inline-flex', width: 28, height: 28, borderRadius: 6,
-                background: 'var(--accent)', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 0 0 4px var(--accent-glow)',
-              }}>
-                <span className="aid-display" style={{ fontSize: 18, color: '#07090d', lineHeight: 1 }}>A</span>
-              </span>
-              <span className="aid-display" style={{ fontSize: 20, color: 'var(--text-primary)' }}>
-                AI Digest
-              </span>
-              <span className="aid-mono" style={{
-                fontSize: 9, color: 'var(--text-tertiary)',
-                border: '1px solid var(--border-strong)', borderRadius: 3, padding: '2px 5px', letterSpacing: '0.1em',
-              }}>1MIN</span>
+            <a href="/" style={{ flexShrink: 0, textDecoration: 'none' }}>
+              <Logo size={30} textSize={20} />
             </a>
 
             {/* Search */}
@@ -80,22 +74,17 @@ export default function RootLayout({ children }) {
 
             <div style={{ flex: 1 }} />
 
-            {/* Subscribe button (triggers notification panel below) */}
+            {/* Subscribe CTA */}
             <a href="#notify" style={{
               padding: '8px 18px', borderRadius: 8, fontSize: 13, fontWeight: 500,
-              background: 'var(--accent)', color: '#fff',
-              boxShadow: '0 0 0 0 var(--accent-glow)',
-              transition: 'box-shadow 0.2s ease',
-              flexShrink: 0,
+              background: 'var(--accent)', color: '#fff', flexShrink: 0,
+              transition: 'opacity 0.2s',
             }}>
               Subscribe
             </a>
           </div>
 
-          {/* Notification banner sits just below the nav bar */}
           <NotificationBanner />
-
-          {/* Live news ticker */}
           <NewsTicker items={tickerItems} />
         </header>
 
@@ -103,25 +92,76 @@ export default function RootLayout({ children }) {
           {children}
         </main>
 
-        {/* Footer */}
+        {/* ── Footer ── */}
         <footer style={{
           maxWidth: 1440, margin: '80px auto 0',
-          padding: '40px 56px',
+          padding: '48px 56px',
           borderTop: '1px solid var(--border)',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{
-              display: 'inline-flex', width: 22, height: 22, borderRadius: 5,
-              background: 'var(--accent)', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <span className="aid-display" style={{ fontSize: 14, color: '#07090d' }}>A</span>
-            </span>
-            <span className="aid-display" style={{ fontSize: 16, color: 'var(--text-secondary)' }}>AI Digest</span>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 40, flexWrap: 'wrap' }}>
+            {/* Brand */}
+            <div>
+              <Logo size={28} textSize={18} />
+              <p style={{ fontSize: 13, color: 'var(--text-tertiary)', margin: '14px 0 0', maxWidth: 280, lineHeight: 1.6 }}>
+                The fastest way to stay on top of AI. Every article summarized in under 1 minute.
+              </p>
+            </div>
+
+            {/* Nav links */}
+            <div style={{ display: 'flex', gap: 48 }}>
+              <div>
+                <p className="aid-kicker" style={{ marginBottom: 16, color: 'var(--text-muted)' }}>Company</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {footerLinks.map(({ label, href }) => (
+                    <a key={href} href={href} style={{
+                      fontSize: 14, color: 'var(--text-secondary)',
+                      transition: 'color 0.15s',
+                    }}
+                    onMouseEnter={(e) => e.target.style.color = 'var(--text-primary)'}
+                    onMouseLeave={(e) => e.target.style.color = 'var(--text-secondary)'}
+                    >
+                      {label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="aid-kicker" style={{ marginBottom: 16, color: 'var(--text-muted)' }}>Topics</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {['Research', 'Product', 'Safety', 'Business'].map((cat) => (
+                    <a key={cat} href={`/topic/${cat.toLowerCase()}`} style={{
+                      fontSize: 14, color: 'var(--text-secondary)',
+                      transition: 'color 0.15s',
+                    }}
+                    onMouseEnter={(e) => e.target.style.color = 'var(--text-primary)'}
+                    onMouseLeave={(e) => e.target.style.color = 'var(--text-secondary)'}
+                    >
+                      {cat}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-          <p className="aid-mono" style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-            AI news summarized in 1 minute · {new Date().getFullYear()}
-          </p>
+
+          {/* Bottom bar */}
+          <div style={{
+            marginTop: 48, paddingTop: 24,
+            borderTop: '1px solid var(--border)',
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12,
+          }}>
+            <p className="aid-mono" style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+              © {new Date().getFullYear()} 1minAi. All rights reserved.
+            </p>
+            <div style={{ display: 'flex', gap: 20 }}>
+              {footerLinks.map(({ label, href }) => (
+                <a key={href} href={href} className="aid-mono" style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                  {label}
+                </a>
+              ))}
+            </div>
+          </div>
         </footer>
       </body>
     </html>
