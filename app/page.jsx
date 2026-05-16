@@ -71,7 +71,7 @@ function HeroCard({ article }) {
         )}
       </div>
       <Kicker category={article.category} author={article.author} />
-      <h2 className="aid-display card-headline" style={{
+      <h2 className="aid-display card-headline hero-title" style={{
         fontSize: 46, margin: '0 0 16px',
         color: 'var(--text-primary)',
         transition: 'color 0.2s ease',
@@ -80,7 +80,7 @@ function HeroCard({ article }) {
         {headline}
       </h2>
       {excerpt && (
-        <p style={{ fontSize: 16, lineHeight: 1.6, color: 'var(--text-secondary)', margin: '0 0 16px', maxWidth: 560 }}>
+        <p className="hero-excerpt" style={{ fontSize: 16, lineHeight: 1.6, color: 'var(--text-secondary)', margin: '0 0 16px', maxWidth: 560 }}>
           {excerpt}
         </p>
       )}
@@ -107,7 +107,7 @@ function FeaturedCard({ article }) {
       display: 'block', padding: '20px 0',
       borderTop: '1px solid var(--border)',
     }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: 18, alignItems: 'start' }}>
+      <div className="featured-card-inner" style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: 18, alignItems: 'start' }}>
         <div style={{ borderRadius: 8, overflow: 'hidden', aspectRatio: '4/3', flexShrink: 0 }}>
           <ArticleImage src={article.image_url} author={article.author} alt={headline}
             className="w-full h-full object-cover" />
@@ -222,19 +222,19 @@ export default function HomePage({ searchParams }) {
   return (
     <div>
       {/* ── Masthead ── */}
-      <div style={{ padding: '48px 56px 0' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 40, marginBottom: 32 }}>
+      <div className="page-pad" style={{ padding: '48px 56px 0' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 40, marginBottom: 32, flexWrap: 'wrap' }}>
           <div>
             <p className="aid-kicker" style={{ marginBottom: 10, letterSpacing: '0.16em' }}>
               {formatMasthead()}
             </p>
-            <h1 className="aid-display" style={{ fontSize: 56, margin: 0, lineHeight: 1 }}>
+            <h1 className="aid-display masthead-h1" style={{ fontSize: 56, margin: 0, lineHeight: 1 }}>
               Today in <em style={{ fontStyle: 'italic' }}>AI</em>.
             </h1>
           </div>
           <div style={{ flex: 1 }} />
           {!isFiltered && total > 0 && (
-            <div style={{ paddingBottom: 8, display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div className="masthead-stats" style={{ paddingBottom: 8, display: 'flex', alignItems: 'center', gap: 14 }}>
               <span className="aid-kicker">{total} articles</span>
               <span style={{ width: 1, height: 14, background: 'var(--border-strong)', display: 'inline-block' }} />
               <span className="aid-kicker">≈ {total} min total</span>
@@ -249,11 +249,11 @@ export default function HomePage({ searchParams }) {
       </div>
 
       {/* Divider */}
-      <div style={{ height: 1, background: 'var(--border)', margin: '32px 56px 0' }} />
+      <div className="divider-x" style={{ height: 1, background: 'var(--border)', margin: '32px 56px 0' }} />
 
       {/* ── Filtered results info ── */}
       {isFiltered && (
-        <p className="aid-meta" style={{ padding: '24px 56px 0' }}>
+        <p className="aid-meta page-pad" style={{ padding: '24px 56px 0' }}>
           {total} result{total !== 1 ? 's' : ''}
           {q && <> for <strong style={{ color: 'var(--text-primary)' }}>"{q}"</strong></>}
           {source && <> from <strong style={{ color: 'var(--text-primary)' }}>{source}</strong></>}
@@ -263,7 +263,7 @@ export default function HomePage({ searchParams }) {
 
       {/* ── Empty state ── */}
       {articles.length === 0 && (
-        <div style={{ padding: '120px 56px', textAlign: 'center' }}>
+        <div className="page-pad" style={{ padding: '120px 56px', textAlign: 'center' }}>
           <p className="aid-kicker" style={{ color: 'var(--text-muted)' }}>
             {isFiltered ? 'No articles match your filters.' : 'No articles yet. Run the automation to get started.'}
           </p>
@@ -272,8 +272,8 @@ export default function HomePage({ searchParams }) {
 
       {/* ── Hero + Featured row ── */}
       {hero && (
-        <div style={{ padding: '48px 56px 0' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 56 }}>
+        <div className="page-pad" style={{ padding: '48px 56px 0' }}>
+          <div className="hero-grid" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 56 }}>
             {/* Hero */}
             <HeroCard article={hero} />
 
@@ -289,9 +289,9 @@ export default function HomePage({ searchParams }) {
 
       {/* ── 3-col grid ── */}
       {grid.length > 0 && (
-        <div style={{ padding: '48px 56px 0' }}>
+        <div className="page-pad" style={{ padding: '48px 56px 0' }}>
           <div style={{ height: 1, background: 'var(--border)', marginBottom: 48 }} />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 28 }}>
+          <div className="article-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 28 }}>
             {grid.map((article) => (
               <GridCard key={article.id} article={article} />
             ))}
@@ -301,7 +301,7 @@ export default function HomePage({ searchParams }) {
 
       {/* ── Pagination ── */}
       {pages > 1 && (
-        <div style={{
+        <div className="page-pad" style={{
           padding: '56px 56px 0',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12,
         }}>

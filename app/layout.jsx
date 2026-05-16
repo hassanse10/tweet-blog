@@ -57,7 +57,7 @@ export default function RootLayout({ children }) {
           backdropFilter: 'blur(16px)',
           borderBottom: '1px solid var(--border)',
         }}>
-          <div style={{
+          <div className="nav-inner" style={{
             maxWidth: 1440, margin: '0 auto',
             padding: '0 56px', height: 64,
             display: 'flex', alignItems: 'center', gap: 32,
@@ -68,7 +68,7 @@ export default function RootLayout({ children }) {
             </a>
 
             {/* Search */}
-            <div style={{ flex: 1, maxWidth: 420 }}>
+            <div className="nav-search" style={{ flex: 1, maxWidth: 420 }}>
               <Suspense><SearchBar /></Suspense>
             </div>
 
@@ -93,7 +93,7 @@ export default function RootLayout({ children }) {
         </main>
 
         {/* ── Footer ── */}
-        <footer style={{
+        <footer className="page-pad" style={{
           maxWidth: 1440, margin: '80px auto 0',
           padding: '48px 56px',
           borderTop: '1px solid var(--border)',
@@ -108,7 +108,7 @@ export default function RootLayout({ children }) {
             </div>
 
             {/* Nav links */}
-            <div style={{ display: 'flex', gap: 48 }}>
+            <div className="footer-nav-cols" style={{ display: 'flex', gap: 48 }}>
               <div>
                 <p className="aid-kicker" style={{ marginBottom: 16, color: 'var(--text-muted)' }}>Company</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>

@@ -43,7 +43,7 @@ export default function TopicPage({ params, searchParams }) {
   const catColor = CAT_COLOR[category] || 'var(--accent)';
 
   return (
-    <div style={{ padding: '48px 56px' }}>
+    <div className="page-pad" style={{ padding: '48px 56px' }}>
       {/* Header */}
       <div style={{ marginBottom: 48 }}>
         <Link href="/" className="aid-kicker" style={{ color: 'var(--accent)', marginBottom: 20, display: 'inline-block' }}>
@@ -51,7 +51,7 @@ export default function TopicPage({ params, searchParams }) {
         </Link>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 16 }}>
           <span className="cat-dot" style={{ background: catColor, width: 10, height: 10 }} />
-          <h1 className="aid-display" style={{ fontSize: 48, margin: 0 }}>{category}</h1>
+          <h1 className="aid-display topic-h1" style={{ fontSize: 48, margin: 0 }}>{category}</h1>
         </div>
         <p className="aid-meta" style={{ marginTop: 12 }}>{total} articles</p>
       </div>
@@ -64,7 +64,7 @@ export default function TopicPage({ params, searchParams }) {
           No articles in this category yet.
         </p>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
+        <div className="article-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
           {articles.map((a) => {
             const headline = a.summary.split('\n').find(Boolean) || 'Article';
             const excerpt  = a.summary.split('\n').filter(Boolean).slice(1).join(' ').slice(0, 110);

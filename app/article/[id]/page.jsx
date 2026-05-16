@@ -119,7 +119,7 @@ export default function ArticlePage({ params }) {
       {faqJsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />}
       {videoJsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd) }} />}
 
-      <div className="mb-4">
+      <div className="mb-4 page-pad" style={{ paddingTop: 20 }}>
         <Link href="/" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
           ← Back to all articles
         </Link>

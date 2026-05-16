@@ -163,13 +163,13 @@ export default function ArticleContent({ article, related = [] }) {
     <article style={{ paddingBottom: 120 }}>
 
       {/* ── Hero image (always shown — ArticleImage handles gradient fallback) ── */}
-      <div style={{ width: '100%', aspectRatio: '21/9', overflow: 'hidden' }}>
+      <div className="article-aspect" style={{ width: '100%', aspectRatio: '21/9', overflow: 'hidden' }}>
         <ArticleImage src={article.image_url} author={article.author} alt={headline}
           className="w-full h-full object-cover" />
       </div>
 
       {/* ── Headline block ── */}
-      <div style={{ padding: '48px 56px 0', maxWidth: 1100, margin: '0 auto' }}>
+      <div className="page-pad" style={{ padding: '48px 56px 0', maxWidth: 1100, margin: '0 auto' }}>
         {/* Kicker */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
           <span className="cat-dot" style={{ background: catColor }} />
@@ -182,7 +182,7 @@ export default function ArticleContent({ article, related = [] }) {
         </div>
 
         {/* Title */}
-        <h1 className="aid-display" style={{
+        <h1 className="aid-display article-h1" style={{
           fontSize: 52, lineHeight: 1.02, margin: '0 0 28px',
           color: 'var(--text-primary)', maxWidth: 900,
         }}>
@@ -217,7 +217,7 @@ export default function ArticleContent({ article, related = [] }) {
       </div>
 
       {/* ── Body: sidebar TOC + prose ── */}
-      <div style={{
+      <div className="page-pad article-body-grid" style={{
         padding: '56px 56px 0', maxWidth: 1100, margin: '0 auto',
         display: 'grid',
         gridTemplateColumns: showToc ? '200px 1fr' : '1fr',
@@ -226,7 +226,7 @@ export default function ArticleContent({ article, related = [] }) {
 
         {/* Sidebar TOC */}
         {showToc && (
-          <aside style={{ position: 'sticky', top: 88, alignSelf: 'start' }}>
+          <aside className="toc-sidebar" style={{ position: 'sticky', top: 88, alignSelf: 'start' }}>
             <p className="aid-kicker" style={{ marginBottom: 16 }}>In this brief</p>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
               {sections.map((s, i) => (
@@ -318,13 +318,13 @@ export default function ArticleContent({ article, related = [] }) {
 
       {/* ── Related articles ── */}
       {related.length > 0 && (
-        <div style={{
+        <div className="page-pad" style={{
           maxWidth: 1100, margin: '64px auto 0',
           padding: '0 56px',
           borderTop: '1px solid var(--border)', paddingTop: 48,
         }}>
           <p className="aid-kicker" style={{ marginBottom: 24 }}>Continue reading</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+          <div className="related-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
             {related.map((r) => {
               const rHeadline = r.summary.split('\n').find(Boolean) || 'Article';
               return (

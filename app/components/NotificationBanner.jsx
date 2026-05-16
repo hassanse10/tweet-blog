@@ -20,6 +20,7 @@ const bannerBase = {
   display: 'flex', alignItems: 'center',
   fontSize: 13,
 };
+const bannerClass = 'page-pad';
 
 export default function NotificationBanner() {
   const [state, setState] = useState('hidden');
@@ -98,7 +99,7 @@ export default function NotificationBanner() {
 
   if (state === 'subscribed') {
     return (
-      <div id="notify" style={bannerBase}>
+      <div id="notify" className={bannerClass} style={bannerBase}>
         <span style={{ color: 'var(--cat-product)', marginRight: 10 }}>●</span>
         <span className="aid-kicker" style={{ color: 'var(--text-secondary)', marginRight: 12 }}>Subscribed</span>
         {savedSources.map((s) => (
@@ -118,7 +119,7 @@ export default function NotificationBanner() {
 
   if (state === 'collapsed') {
     return (
-      <div id="notify" style={bannerBase}>
+      <div id="notify" className={bannerClass} style={bannerBase}>
         <span style={{ color: 'var(--accent-bright)', marginRight: 10, fontSize: 12 }}>◐</span>
         <span style={{ color: 'var(--text-secondary)', flex: 1, fontSize: 13 }}>
           Get notified when new AI articles drop
@@ -140,7 +141,7 @@ export default function NotificationBanner() {
 
   // expanded / editing
   return (
-    <div id="notify" style={{ ...bannerBase, flexDirection: 'column', alignItems: 'flex-start', gap: 14 }}>
+    <div id="notify" className={bannerClass} style={{ ...bannerBase, flexDirection: 'column', alignItems: 'flex-start', gap: 14 }}>
       <p className="aid-kicker" style={{ color: 'var(--text-secondary)', margin: 0 }}>
         Pick the sources you want to follow:
       </p>
