@@ -1,0 +1,29 @@
+name: Backfill Article Images
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # every hour
+  workflow_dispatch:        # allow manual trigger
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call backfill API
+        run: |
+          RESPONSE=$(curl -s -X POST https://1minai.site/api/fetch-images \
+            -H "Content-Type: application/json" \
+            --max-time 180)
+          echo "Response: $RESPONSE"
+
+          UPDATED=$(echo "$RESPONSE" | jq -r '.updated // 0')
+          TOTAL=$(echo "$RESPONSE" | jq -r '.total // 0')
+          MESSAGE=$(echo "$RESPONSE" | jq -r '.message // ""')
+
+          echo "Updated: $UPDATED / $TOTAL"
+
+          if [ "$MESSAGE" = "No articles need images" ] || [ "$TOTAL" = "0" ]; then
+            echo "All articles have images — nothing to do."
+          else
+            echo "$UPDATED images added this run."
+          fi
