@@ -175,6 +175,14 @@
   50%       { transform: translate(-50%, -50%) scale(1.08); }
 }
 
+/* ── Footer links ── */
+.footer-link {
+  font-size: 14px;
+  color: var(--text-secondary);
+  transition: color 0.15s;
+}
+.footer-link:hover { color: var(--text-primary); }
+
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }

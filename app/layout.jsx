@@ -113,13 +113,7 @@ export default function RootLayout({ children }) {
                 <p className="aid-kicker" style={{ marginBottom: 16, color: 'var(--text-muted)' }}>Company</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   {footerLinks.map(({ label, href }) => (
-                    <a key={href} href={href} style={{
-                      fontSize: 14, color: 'var(--text-secondary)',
-                      transition: 'color 0.15s',
-                    }}
-                    onMouseEnter={(e) => e.target.style.color = 'var(--text-primary)'}
-                    onMouseLeave={(e) => e.target.style.color = 'var(--text-secondary)'}
-                    >
+                    <a key={href} href={href} className="footer-link">
                       {label}
                     </a>
                   ))}
@@ -130,13 +124,7 @@ export default function RootLayout({ children }) {
                 <p className="aid-kicker" style={{ marginBottom: 16, color: 'var(--text-muted)' }}>Topics</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   {['Research', 'Product', 'Safety', 'Business'].map((cat) => (
-                    <a key={cat} href={`/topic/${cat.toLowerCase()}`} style={{
-                      fontSize: 14, color: 'var(--text-secondary)',
-                      transition: 'color 0.15s',
-                    }}
-                    onMouseEnter={(e) => e.target.style.color = 'var(--text-primary)'}
-                    onMouseLeave={(e) => e.target.style.color = 'var(--text-secondary)'}
-                    >
+                    <a key={cat} href={`/topic/${cat.toLowerCase()}`} className="footer-link">
                       {cat}
                     </a>
                   ))}
