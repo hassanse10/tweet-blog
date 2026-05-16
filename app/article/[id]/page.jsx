@@ -119,9 +119,17 @@ export default function ArticlePage({ params }) {
       {faqJsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />}
       {videoJsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd) }} />}
 
-      <div className="mb-4 page-pad" style={{ paddingTop: 20 }}>
-        <Link href="/" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
-          ← Back to all articles
+      <div className="page-pad" style={{ paddingTop: 20, paddingBottom: 8 }}>
+        <Link href="/" style={{
+          display: 'inline-flex', alignItems: 'center', gap: 8,
+          padding: '8px 14px', borderRadius: 8,
+          background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+          fontSize: 13, color: 'var(--text-secondary)', transition: 'border-color 0.15s',
+        }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <polyline points="15,18 9,12 15,6"/>
+          </svg>
+          Back
         </Link>
       </div>
 

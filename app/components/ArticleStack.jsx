@@ -72,6 +72,16 @@ export default function ArticleStack({ initialArticle, initialRelated }) {
       {articles.map(({ article, related }, i) => (
         <div key={article.id} ref={(el) => (articleRefs.current[i] = el)}>
           <ArticleContent article={article} related={related} />
+          {(hasMore || i < articles.length - 1) && (
+            <div style={{
+              padding: '32px 0 48px', textAlign: 'center',
+              borderTop: '1px solid var(--border)',
+            }}>
+              <span className="aid-kicker" style={{ color: 'var(--text-muted)', letterSpacing: '0.2em' }}>
+                ↑ SWIPE FOR NEXT
+              </span>
+            </div>
+          )}
         </div>
       ))}
 
