@@ -1,6 +1,24 @@
+const BASE_URL = 'https://1minai.site';
+
 export const metadata = {
   title: 'Contact — 1minAi',
   description: 'Get in touch with the 1minAi team.',
+  alternates: { canonical: `${BASE_URL}/contact` },
+  openGraph: {
+    title: 'Contact — 1minAi',
+    description: 'Get in touch with the 1minAi team.',
+    url: `${BASE_URL}/contact`,
+    siteName: '1minAi',
+    type: 'website',
+    locale: 'en_US',
+    images: [{ url: `${BASE_URL}/icon-192.png`, width: 192, height: 192, alt: '1minAi' }],
+  },
+  twitter: {
+    card: 'summary',
+    site: '@1minai',
+    title: 'Contact — 1minAi',
+    description: 'Get in touch with the 1minAi team.',
+  },
 };
 
 const CHANNELS = [

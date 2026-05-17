@@ -1,6 +1,22 @@
+const BASE_URL = 'https://1minai.site';
+
 export const metadata = {
   title: 'Terms of Service — 1minAi',
   description: 'Terms of Service for 1minAi.',
+  alternates: { canonical: `${BASE_URL}/terms` },
+  openGraph: {
+    title: 'Terms of Service — 1minAi',
+    description: 'Terms of Service for 1minAi.',
+    url: `${BASE_URL}/terms`,
+    siteName: '1minAi',
+    type: 'website',
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary',
+    site: '@1minai',
+    title: 'Terms of Service — 1minAi',
+  },
 };
 
 const LAST_UPDATED = 'May 16, 2026';

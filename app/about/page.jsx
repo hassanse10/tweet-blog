@@ -1,8 +1,26 @@
 import Logo from '../components/Logo';
 
+const BASE_URL = 'https://1minai.site';
+
 export const metadata = {
   title: 'About — 1minAi',
   description: 'Learn about 1minAi — the fastest way to stay on top of AI news.',
+  alternates: { canonical: `${BASE_URL}/about` },
+  openGraph: {
+    title: 'About — 1minAi',
+    description: 'Learn about 1minAi — the fastest way to stay on top of AI news.',
+    url: `${BASE_URL}/about`,
+    siteName: '1minAi',
+    type: 'website',
+    locale: 'en_US',
+    images: [{ url: `${BASE_URL}/icon-192.png`, width: 192, height: 192, alt: '1minAi' }],
+  },
+  twitter: {
+    card: 'summary',
+    site: '@1minai',
+    title: 'About — 1minAi',
+    description: 'Learn about 1minAi — the fastest way to stay on top of AI news.',
+  },
 };
 
 const TEAM = [

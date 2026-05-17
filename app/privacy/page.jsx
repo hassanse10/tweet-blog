@@ -1,6 +1,22 @@
+const BASE_URL = 'https://1minai.site';
+
 export const metadata = {
   title: 'Privacy Policy — 1minAi',
   description: 'Privacy Policy for 1minAi.',
+  alternates: { canonical: `${BASE_URL}/privacy` },
+  openGraph: {
+    title: 'Privacy Policy — 1minAi',
+    description: 'Privacy Policy for 1minAi.',
+    url: `${BASE_URL}/privacy`,
+    siteName: '1minAi',
+    type: 'website',
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary',
+    site: '@1minai',
+    title: 'Privacy Policy — 1minAi',
+  },
 };
 
 const LAST_UPDATED = 'May 16, 2026';

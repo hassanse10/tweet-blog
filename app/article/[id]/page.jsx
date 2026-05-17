@@ -35,7 +35,7 @@ export async function generateMetadata({ params }) {
       modifiedTime: article.created_at,
       authors: [article.author],
       siteName: '1minAi',
-      images: article.image_url ? [{ url: article.image_url, width: 1200, height: 630 }] : [],
+      images: article.image_url ? [{ url: article.image_url, width: 1200, height: 630, alt: headline }] : [],
     },
     twitter: {
       card: 'summary_large_image',
@@ -108,8 +108,10 @@ export default function ArticlePage({ params }) {
     '@context': 'https://schema.org',
     '@type': 'VideoObject',
     name: headline,
+    description,
     embedUrl: `https://www.youtube.com/embed/${article.youtube_video_id}`,
     thumbnailUrl: `https://img.youtube.com/vi/${article.youtube_video_id}/hqdefault.jpg`,
+    uploadDate: article.created_at,
   } : null;
 
   return (

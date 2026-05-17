@@ -23,13 +23,39 @@ function readingTime(text) {
   return Math.max(1, Math.round(text.split(/\s+/).length / 200));
 }
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params, searchParams }) {
   const category = decodeURIComponent(params.category);
   const label = category.charAt(0).toUpperCase() + category.slice(1);
+  const page = Math.max(1, parseInt(searchParams?.page || '1', 10));
+  const canonicalUrl = `${BASE_URL}/topic/${category}`;
+  const description = `Latest ${label} news from OpenAI, Anthropic, Google and more — summarized in minutes.`;
+
+  const { pages: totalPages } = searchArticles({ category, page, limit: 21 });
+
   return {
     title: `${label} — 1minAi`,
-    description: `Latest ${label} news from OpenAI, Anthropic, Google and more — summarized in minutes.`,
-    alternates: { canonical: `${BASE_URL}/topic/${category}` },
+    description,
+    alternates: {
+      canonical: page === 1 ? canonicalUrl : `${canonicalUrl}?page=${page}`,
+      ...(page > 1 && { prev: page === 2 ? canonicalUrl : `${canonicalUrl}?page=${page - 1}` }),
+      ...(page < totalPages && { next: `${canonicalUrl}?page=${page + 1}` }),
+    },
+    openGraph: {
+      title: `${label} — AI News — 1minAi`,
+      description,
+      url: canonicalUrl,
+      siteName: '1minAi',
+      type: 'website',
+      locale: 'en_US',
+      images: [{ url: `${BASE_URL}/icon-192.png`, width: 192, height: 192, alt: `${label} AI news — 1minAi` }],
+    },
+    twitter: {
+      card: 'summary',
+      site: '@1minai',
+      title: `${label} — AI News — 1minAi`,
+      description,
+      images: [`${BASE_URL}/icon-192.png`],
+    },
   };
 }
 
@@ -42,7 +68,18 @@ export default function TopicPage({ params, searchParams }) {
   const { articles, total, pages } = searchArticles({ category, page, limit: 21 });
   const catColor = CAT_COLOR[category] || 'var(--accent)';
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+      { '@type': 'ListItem', position: 2, name: category, item: `${BASE_URL}/topic/${category.toLowerCase()}` },
+    ],
+  };
+
   return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
     <div className="page-pad" style={{ padding: '48px 56px' }}>
       {/* Header */}
       <div style={{ marginBottom: 48 }}>
@@ -128,5 +165,6 @@ export default function TopicPage({ params, searchParams }) {
         </div>
       )}
     </div>
+    </>
   );
 }
