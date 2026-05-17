@@ -28,7 +28,14 @@ export async function generateMetadata({ params }) {
   return {
     title: `${headline} | 1minAi`,
     description,
-    alternates: { canonical: canonicalUrl },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: {
+        'en': canonicalUrl,
+        'es': `${BASE_URL}/es/article/${article.slug}`,
+        'fr': `${BASE_URL}/fr/article/${article.slug}`,
+      },
+    },
     openGraph: {
       title: headline,
       description,
@@ -140,6 +147,10 @@ export default function ArticlePage({ params }) {
         </Link>
       </div>
 
+      <div style={{ display: 'flex', gap: 8, padding: '0 56px 8px' }}>
+        <Link href={`/es/article/${article.slug}`} style={{ fontSize: 12, padding: '3px 10px', borderRadius: 6, background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>🇪🇸 Español</Link>
+        <Link href={`/fr/article/${article.slug}`} style={{ fontSize: 12, padding: '3px 10px', borderRadius: 6, background: 'var(--bg-elevated)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>🇫🇷 Français</Link>
+      </div>
       <ArticleStack initialArticle={article} initialRelated={related} />
     </>
   );
