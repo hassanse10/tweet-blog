@@ -46,6 +46,22 @@ const websiteJsonLd = {
   },
 };
 
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: '1minAi',
+  url: BASE_URL,
+  logo: {
+    '@type': 'ImageObject',
+    url: `${BASE_URL}/icon-192.png`,
+    width: 192,
+    height: 192,
+  },
+  sameAs: [
+    'https://twitter.com/1minai',
+  ],
+};
+
 const footerLinks = [
   { label: 'About',   href: '/about'   },
   { label: 'Contact', href: '/contact' },
@@ -66,11 +82,13 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="google-adsense-account" content="ca-pub-8965050599796410" />
+        <link rel="alternate" type="application/rss+xml" title="1minAi RSS Feed" href="/feed.xml" />
         {/* Prevent flash of wrong theme */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){var s=localStorage.getItem('theme');var p=window.matchMedia('(prefers-color-scheme: dark)').matches;if(s==='light'||(!s&&!p)){document.documentElement.classList.add('light');}})();` }} />
       </head>
       <body className="min-h-screen">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
         <ReadingProgress />
 
         {/* ── Navbar ── */}

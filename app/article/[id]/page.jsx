@@ -21,6 +21,9 @@ export async function generateMetadata({ params }) {
   const headline = lines[0] || 'AI Update';
   const description = lines.slice(1).join(' ').slice(0, 160);
   const canonicalUrl = `${BASE_URL}/article/${article.slug}`;
+  const ogImageUrl = article.image_url
+    ? article.image_url
+    : `${BASE_URL}/og?title=${encodeURIComponent(headline)}&category=${encodeURIComponent(article.category || '')}`;
 
   return {
     title: `${headline} | 1minAi`,
@@ -35,14 +38,16 @@ export async function generateMetadata({ params }) {
       modifiedTime: article.created_at,
       authors: [article.author],
       siteName: '1minAi',
-      images: article.image_url ? [{ url: article.image_url, width: 1200, height: 630, alt: headline }] : [],
+      locale: 'en_US',
+      ...(article.category && { section: article.category }),
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: headline }],
     },
     twitter: {
       card: 'summary_large_image',
       site: '@1minai',
       title: headline,
       description,
-      images: article.image_url ? [article.image_url] : [],
+      images: [ogImageUrl],
     },
   };
 }
