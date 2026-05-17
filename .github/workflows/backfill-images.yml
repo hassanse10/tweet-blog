@@ -23,7 +23,7 @@ jobs:
 
       - name: Run image backfill
         env:
-          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ vars.UNSPLASH_ACCESS_KEY }}
           DB_PATH: ${{ github.workspace }}/db/articles.db
           BACKFILL_BATCH: '40'
         run: node automation/backfill-images.js
