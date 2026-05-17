@@ -1,0 +1,3 @@
+# Treat the SQLite DB as binary — no text diffs, no merge conflicts
+db/articles.db binary
+db/articles.db merge=ours
