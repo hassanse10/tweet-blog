@@ -25,11 +25,13 @@ async function run() {
 
   const db = openDb();
 
-  const articles = db.prepare(
-    "SELECT id, summary, category FROM articles WHERE image_url = '' OR image_url IS NULL ORDER BY id DESC"
-  ).all();
+  const batchLimit = parseInt(process.env.BACKFILL_BATCH || '40', 10);
 
-  console.log(`Found ${articles.length} articles without images`);
+  const articles = db.prepare(
+    "SELECT id, summary, category FROM articles WHERE image_url = '' OR image_url IS NULL ORDER BY id DESC LIMIT ?"
+  ).all(batchLimit);
+
+  console.log(`Found ${articles.length} articles without images (batch limit: ${batchLimit})`);
   if (!articles.length) return;
 
   const update = db.prepare('UPDATE articles SET image_url = ? WHERE id = ?');
