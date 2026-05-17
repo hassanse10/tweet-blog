@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 const BASE_URL = 'https://1minai.site';
 
 export const metadata = {
