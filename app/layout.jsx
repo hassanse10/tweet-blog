@@ -14,7 +14,24 @@ export const metadata = {
   title: '1minAi — AI News in 1 Minute',
   description: 'Breaking AI news from OpenAI, Anthropic, Google DeepMind and more — summarized in 1 minute.',
   metadataBase: new URL(BASE_URL),
+  alternates: { canonical: BASE_URL },
   verification: { google: 'WPXHcWraaMEOgVi-aMdMFDZ9i4gwVlptMva0yl1Wu00' },
+  openGraph: {
+    title: '1minAi — AI News in 1 Minute',
+    description: 'Breaking AI news from OpenAI, Anthropic, Google DeepMind and more — summarized in 1 minute.',
+    url: BASE_URL,
+    siteName: '1minAi',
+    type: 'website',
+    locale: 'en_US',
+    images: [{ url: `${BASE_URL}/icon-192.png`, width: 192, height: 192, alt: '1minAi — AI News in 1 Minute' }],
+  },
+  twitter: {
+    card: 'summary',
+    site: '@1minai',
+    title: '1minAi — AI News in 1 Minute',
+    description: 'Breaking AI news from OpenAI, Anthropic, Google DeepMind and more — summarized in 1 minute.',
+    images: [`${BASE_URL}/icon-192.png`],
+  },
 };
 
 const websiteJsonLd = {

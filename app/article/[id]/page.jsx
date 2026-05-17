@@ -6,7 +6,7 @@ import ArticleStack from '../../components/ArticleStack';
 export const dynamic = 'force-dynamic';
 
 const BASE_URL = 'https://1minai.site';
-const PUBLISHER_LOGO = `${BASE_URL}/icon.png`;
+const PUBLISHER_LOGO = `${BASE_URL}/icon-192.png`;
 
 function resolveArticle(param) {
   if (/^\d+$/.test(param)) return getArticleById(Number(param));
@@ -67,7 +67,7 @@ export default function ArticlePage({ params }) {
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'NewsArticle',
     headline,
     description,
     author: { '@type': 'Organization', name: article.author },
