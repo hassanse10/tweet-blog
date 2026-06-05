@@ -1,0 +1,45 @@
+name: Regenerate Articles
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Number of articles to regenerate (oldest first)'
+        required: true
+        default: '10'
+
+concurrency:
+  group: db-write
+  cancel-in-progress: false
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install automation dependencies
+        run: cd automation && npm install
+
+      - name: Regenerate articles
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          DB_PATH: ${{ github.workspace }}/db/articles.db
+          LIMIT: ${{ github.event.inputs.limit }}
+        run: node automation/regenerate-articles.js
+
+      - name: Commit updated database
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f db/articles.db
+          git diff --staged --quiet || git commit -m "chore: regenerate ${{ github.event.inputs.limit }} articles with new structure $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git pull --rebase origin main
+          git push
