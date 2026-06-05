@@ -15,11 +15,13 @@ Given a source article, produce a JSON object with these exact fields:
   - Policy: legislation, government frameworks, copyright, international treaties
 
 - "sections": Array of exactly 4 objects, each with "heading" (H2 string) and "body" (string).
-  Use these exact headings:
-  1. "What Happened" — 3-4 sentences. Summarise the announcement or finding clearly. Include specific details: numbers, model names, dates, capabilities.
-  2. "Background and Context" — 3-4 sentences. Explain the prior state of the field. Why does this moment exist? What was the gap or problem being solved?
-  3. "Why It Matters" — 3-4 sentences. Concrete implications for developers, researchers, businesses, or end users. What changes as a result? Add your own analysis beyond restating the source.
-  4. "What to Watch Next" — 3 sentences. Upcoming milestones, open questions, known limitations. What should readers look for in the coming weeks?
+  Each heading must be written specifically for THIS article — use the real entities, model names, companies, and topics involved. Never use generic headings like "What Happened" or "Background". Make each heading a specific, keyword-rich statement a reader would search for.
+
+  The 4 sections must cover these roles in order:
+  1. THE ANNOUNCEMENT — What was released, found, or decided. Specific details: numbers, model names, dates, capabilities. Heading example: "Meta Releases Llama 3.1 with 405B Parameters and Open Weights"
+  2. THE CONTEXT — Why this moment exists. Prior state of the field, what problem was being solved, how this compares to what came before. Heading example: "How the Open-Source AI Race Pushed Meta to Go Bigger"
+  3. THE IMPLICATIONS — Concrete impact on developers, researchers, businesses, or end users. Original analysis beyond restating the source. What changes as a result. Heading example: "Why Open Weights Change the Economics of Enterprise AI"
+  4. THE UNKNOWNS — Open questions, known limitations, upcoming milestones. What readers should watch for. Heading example: "Llama 3.1 Fine-Tuning Costs and Safety Benchmarks Remain Unclear"
 
 - "faqs": Array of exactly 5 objects, each with "question" and "answer" (2-3 sentences). Cover what a reader would naturally want to know after reading the article. Include at least one technical question and one business/impact question.
 
