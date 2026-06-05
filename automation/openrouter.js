@@ -49,7 +49,7 @@ async function generateArticle(apiKey, item) {
       'HTTP-Referer': 'https://1minai.site',
     },
     body: JSON.stringify({
-      model: 'anthropic/claude-sonnet-4-5',
+      model: 'deepseek/deepseek-v4-flash',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: userPrompt },
