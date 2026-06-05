@@ -48,11 +48,21 @@ async function fetchItems() {
       for (const item of parsed.items.slice(0, ITEMS_PER_FEED)) {
         const id = item.link || item.guid;
         if (!id) continue;
+        // Use full content:encoded HTML stripped to plain text, fallback to contentSnippet
+        const fullHtml = item['content:encoded'] || item.content || '';
+        const fullText = fullHtml
+          .replace(/<[^>]+>/g, ' ')
+          .replace(/&[a-z]+;/gi, ' ')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .slice(0, 4000);
+        const text = fullText || item.contentSnippet || item.title || '';
+
         results.push({
           id,
           author: feed.name,
           title: item.title || '',
-          text: item.contentSnippet || item.title || '',
+          text,
           url: item.link || id,
           image: extractImage(item) || null,
           pubDate: item.isoDate || item.pubDate || null,
