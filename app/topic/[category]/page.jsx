@@ -15,6 +15,15 @@ const CAT_COLOR = {
   News:     'var(--cat-news)',
 };
 
+const CAT_DESCRIPTION = {
+  Research: 'Peer-reviewed papers, technical breakthroughs, and benchmark results from the world\'s leading AI labs — distilled into plain language. We track arXiv preprints, NeurIPS, ICML, and direct lab publications so you never miss a meaningful advance in AI science.',
+  Product: 'New model releases, developer APIs, consumer apps, and platform updates from OpenAI, Anthropic, Google, Meta, and others. If it shipped and it matters to practitioners, it\'s here — with enough context to understand what changed and why it counts.',
+  Safety: 'Alignment research, red-teaming results, policy frameworks, and risk assessments from AI safety teams worldwide. Covers both technical safety (RLHF, interpretability, robustness) and governance efforts shaping how powerful AI systems get deployed.',
+  Business: 'Funding rounds, acquisitions, enterprise deals, and strategic moves across the AI industry. We track how capital is flowing, which companies are scaling, and what the commercial landscape looks like for AI in 2025 and beyond.',
+  News: 'Breaking announcements, executive statements, regulatory developments, and cultural moments in AI. These are the stories that set the agenda — summarized fast so you can form an informed opinion before the conversation moves on.',
+  Policy: 'Government regulations, international frameworks, copyright rulings, and legislative proposals affecting AI development. Covers the EU AI Act, US executive orders, global treaty efforts, and the ongoing debate over who gets to set the rules for artificial intelligence.',
+};
+
 function formatDate(d) {
   return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
@@ -91,6 +100,14 @@ export default function TopicPage({ params, searchParams }) {
           <h1 className="aid-display topic-h1" style={{ fontSize: 48, margin: 0 }}>{category}</h1>
         </div>
         <p className="aid-meta" style={{ marginTop: 12 }}>{total} articles</p>
+        {CAT_DESCRIPTION[category] && (
+          <p style={{
+            marginTop: 20, fontSize: 16, lineHeight: 1.75,
+            color: 'var(--text-secondary)', maxWidth: 720,
+          }}>
+            {CAT_DESCRIPTION[category]}
+          </p>
+        )}
       </div>
 
       <div style={{ height: 1, background: 'var(--border)', marginBottom: 48 }} />

@@ -25,12 +25,15 @@ export async function generateMetadata({ params }) {
     ? article.image_url
     : `${BASE_URL}/og?title=${encodeURIComponent(headline)}&category=${encodeURIComponent(article.category || '')}`;
 
+  const wordCount = article.summary.split(/\s+/).length;
+
   return {
     title: `${headline} | 1minAi`,
     description,
     alternates: {
       canonical: canonicalUrl,
     },
+    ...(wordCount < 120 && { robots: { index: false, follow: true } }),
     openGraph: {
       title: headline,
       description,

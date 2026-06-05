@@ -90,6 +90,44 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Editorial Policy */}
+      <section style={{ marginBottom: 64 }}>
+        <p className="aid-kicker" style={{ marginBottom: 16, color: 'var(--accent)' }}>Editorial policy</p>
+        <h2 className="aid-display" style={{ fontSize: 32, margin: '0 0 20px' }}>
+          How we ensure quality
+        </h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {[
+            {
+              title: 'AI-assisted, human-curated',
+              body: 'Every article on 1minAi is produced with the assistance of large language models, but sourced exclusively from verified announcements, research papers, and official posts by leading AI organizations. We do not scrape generic web content.',
+            },
+            {
+              title: 'Original source always linked',
+              body: 'Each article prominently links back to its primary source — whether that\'s an official blog post, arXiv paper, or company announcement. We add context and analysis; we never replace the original.',
+            },
+            {
+              title: 'Quality threshold for publication',
+              body: 'Articles are only published when they meet a minimum content standard: a clear headline, categorization, supporting image, and structured body. Summaries that do not meet this bar are discarded before publication.',
+            },
+            {
+              title: 'Corrections & contact',
+              body: 'Found an error or outdated information? Use the contact page to report it. We review and correct factual errors promptly. Our goal is accuracy, not volume.',
+            },
+          ].map(({ title, body }) => (
+            <div key={title} style={{
+              padding: '20px 24px', borderRadius: 10,
+              border: '1px solid var(--border)', background: 'var(--bg-surface)',
+            }}>
+              <p style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', margin: '0 0 8px' }}>{title}</p>
+              <p style={{ fontSize: 14, lineHeight: 1.7, color: 'var(--text-secondary)', margin: 0 }}>{body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div style={{ height: 1, background: 'var(--border)', marginBottom: 64 }} />
+
       {/* Sources */}
       <section style={{ marginBottom: 64 }}>
         <p className="aid-kicker" style={{ marginBottom: 24, color: 'var(--text-muted)' }}>Sources we cover</p>

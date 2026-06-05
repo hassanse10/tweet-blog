@@ -255,6 +255,33 @@ export default function ArticleContent({ article, related = [] }) {
           </div>
         </div>
 
+        {/* Source callout */}
+        {sourceUrl && (
+          <a href={sourceUrl} target="_blank" rel="noopener noreferrer" style={{
+            display: 'flex', alignItems: 'center', gap: 12,
+            marginTop: 20, padding: '12px 16px', borderRadius: 8,
+            background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+            textDecoration: 'none', transition: 'border-color 0.15s',
+          }}>
+            <span style={{
+              flexShrink: 0, width: 28, height: 28, borderRadius: 6,
+              background: 'var(--accent-glow)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent-bright)" strokeWidth="2.5">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+            </span>
+            <div style={{ minWidth: 0 }}>
+              <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: '0 0 1px', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Original source</p>
+              <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <strong style={{ color: 'var(--text-primary)' }}>{sourceDomain || 'View source'}</strong>
+                <span style={{ color: 'var(--text-muted)' }}> — read the full announcement →</span>
+              </p>
+            </div>
+          </a>
+        )}
+
         {/* Audio bar */}
         {articleText && <AudioBar text={articleText} />}
       </div>
@@ -311,22 +338,6 @@ export default function ArticleContent({ article, related = [] }) {
             paragraphs.map((p, i) => (
               <p key={i} className={i === 0 ? 'lede' : ''}>{p}</p>
             ))
-          )}
-
-          {/* Source link */}
-          {sourceUrl && (
-            <div style={{
-              margin: '2em 0 0', padding: '14px 0',
-              borderTop: '1px solid var(--border)',
-              display: 'flex', alignItems: 'center', gap: 10,
-            }}>
-              <span style={{ color: 'var(--accent)', fontSize: 14, flexShrink: 0 }}>↗</span>
-              <a href={sourceUrl} target="_blank" rel="noopener noreferrer"
-                className="aid-meta" style={{ color: 'var(--text-secondary)' }}>
-                Read the full article on{' '}
-                <strong style={{ color: 'var(--text-primary)' }}>{sourceDomain || 'source'}</strong>
-              </a>
-            </div>
           )}
 
           {/* Video section */}
