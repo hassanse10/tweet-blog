@@ -11,7 +11,7 @@ const FEEDS = [
   { name: 'Meta AI',       url: 'https://ai.meta.com/blog/feed/' },
 ];
 
-const ITEMS_PER_FEED = 5;
+const ITEMS_PER_FEED = 1;
 
 function extractImage(item) {
   // enclosure (standard RSS)
